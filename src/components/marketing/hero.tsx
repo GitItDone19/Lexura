@@ -8,7 +8,7 @@ import Container from "../global/container";
 
 const Hero = () => {
     return (
-        <div className="flex flex-col items-center text-center w-full max-w-5xl my-24 mx-auto z-40 relative">
+        <div className="flex flex-col items-center text-center w-full my-24 mx-auto z-40 relative px-4">
             <Container delay={0.0}>
                 <div className="pl-2 pr-1 py-1 rounded-full border border-foreground/10 hover:border-foreground/15 backdrop-blur-lg cursor-pointer flex items-center gap-2.5 select-none w-max mx-auto">
                     <div className="w-3.5 h-3.5 rounded-full bg-primary/40 flex items-center justify-center relative">
@@ -19,39 +19,37 @@ const Hero = () => {
                         </div>
                     </div>
                     <span className="inline-flex items-center justify-center gap-2 animate-text-gradient animate-background-shine bg-gradient-to-r from-[#93c5fd] via-[#3b82f6] to-[#bfdbfe] bg-[200%_auto] bg-clip-text text-sm text-transparent">
-                        EU AI Act Compliance Made Simple
-                        <span className="text-xs text-secondary-foreground px-1.5 py-0.5 rounded-full bg-gradient-to-b from-foreground/20 to-foreground/10 flex items-center justify-center">
-                            2027 Ready
-                            <ArrowRightIcon className="w-3.5 h-3.5 ml-1 text-foreground/50" />
-                        </span>
+                        EU AI Act Compliance Platform
                     </span>
                 </div>
             </Container>
-            <BlurText
-                word={"Navigate EU AI Act\nCompliance with Confidence"}
-                className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent py-2 md:py-0 lg:!leading-snug font-medium racking-[-0.0125em] mt-6 font-heading"
-            />
-            <Container delay={0.1}>
-                <p className="text-sm sm:text-base lg:text-lg mt-4 text-accent-foreground/60 max-w-2xl mx-auto">
-                    Lexura helps businesses assess, understand, and achieve EU AI Act compliance through guided assessments and actionable insights. <span className="hidden sm:inline">Get your compliance score in minutes, not months.</span>
-                </p>
-            </Container>
-            <Container delay={0.2}>
-                <div className="flex items-center justify-center md:gap-x-6 mt-8">
-                    <Button asChild size="lg">
-                        <Link href="/app">
-                            Start Assessment
-                        </Link>
-                    </Button>
-                    <Button asChild size="lg" variant="outline" className="hidden md:flex">
-                        <Link href="#features">
-                            Learn More
-                        </Link>
-                    </Button>
-                </div>
-            </Container>
+            <div className="max-w-5xl mx-auto">
+                <BlurText
+                    word={"AI Done Right"}
+                    className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent py-2 md:py-0 lg:!leading-snug font-bold racking-[-0.0125em] mt-6 font-heading"
+                />
+                <Container delay={0.1}>
+                    <p className="text-sm sm:text-base lg:text-lg mt-4 text-accent-foreground/60 max-w-2xl mx-auto">
+                        Secure audit-ready reports and total risk visibility for your AI systems in minutes.
+                    </p>
+                </Container>
+                <Container delay={0.2}>
+                    <div className="flex items-center justify-center md:gap-x-6 mt-8">
+                        <Button asChild size="lg" className="bg-white text-black hover:bg-white/90">
+                            <Link href="/app">
+                                Try Lexura
+                            </Link>
+                        </Button>
+                        <Button asChild size="lg" variant="outline" className="hidden md:flex">
+                            <Link href="#features">
+                                Learn More
+                            </Link>
+                        </Button>
+                    </div>
+                </Container>
+            </div>
             <Container delay={0.3}>
-                <div className="relative mx-auto max-w-7xl rounded-xl lg:rounded-[32px] border border-neutral-200/50 p-2 backdrop-blur-lg border-neutral-700 bg-neutral-800/50 md:p-4 mt-12">
+                <div className="relative mx-auto w-full max-w-[95vw] rounded-xl lg:rounded-[32px] border border-neutral-200/50 p-2 backdrop-blur-lg border-neutral-700 bg-neutral-800/50 md:p-4 mt-12">
                     <div className="absolute top-1/4 left-1/2 -z-10 gradient w-3/4 -translate-x-1/2 h-1/4 -translate-y-1/2 inset-0 blur-[10rem]"></div>
 
                     <div className="rounded-lg lg:rounded-[24px] border p-2 border-neutral-700 bg-black">
@@ -60,7 +58,7 @@ const Hero = () => {
                             alt="dashboard"
                             width={1920}
                             height={1080}
-                            className="rounded-lg lg:rounded-[20px]"
+                            className="rounded-lg lg:rounded-[20px] w-full h-auto"
                         />
                     </div>
                 </div>

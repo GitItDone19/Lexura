@@ -6,7 +6,7 @@ export const PERKS = [
     {
         icon: ClockIcon,
         title: "Save Time & Resources",
-        description: "Complete comprehensive EU AI Act assessments in minutes instead of months with our guided workflow."
+        description: "Complete comprehensive AI compliance assessments in minutes instead of months with our guided workflow."
     },
     {
         icon: ShieldCheckIcon,
@@ -31,6 +31,6 @@ export const PERKS = [
     {
         icon: TrendingUpIcon,
         title: "Expert Guidance",
-        description: "Benefit from EU AI Act expertise built into every assessment question and recommendation."
+        description: "Benefit from regulatory expertise built into every assessment question and recommendation."
     },
 ];

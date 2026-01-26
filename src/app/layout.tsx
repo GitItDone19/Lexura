@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import { cn, generateMetadata } from "@/functions";
-import { inter, satoshi } from "@/constants";
+import { jakarta, inter } from "@/constants";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/components";
 
@@ -17,7 +17,7 @@ export default function RootLayout({
                 className={cn(
                     "min-h-screen bg-background text-foreground antialiased font-default overflow-x-hidden !scrollbar-hide",
                     inter.variable,
-                    satoshi.variable,
+                    jakarta.variable,
                 )}
             >
                 <Toaster

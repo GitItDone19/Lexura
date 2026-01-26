@@ -133,8 +133,8 @@ export function EnhancedSidebar() {
               <Image 
                 src="/images/logo.png" 
                 alt="Lexura Logo" 
-                width={40} 
-                height={40}
+                width={28} 
+                height={28}
                 quality={100}
                 priority
                 className="group-hover:scale-110 transition-transform object-contain"
@@ -149,8 +149,8 @@ export function EnhancedSidebar() {
               <Image 
                 src="/images/logo.png" 
                 alt="Lexura Logo" 
-                width={40} 
-                height={40}
+                width={28} 
+                height={28}
                 quality={100}
                 priority
                 className="hover:scale-110 transition-transform object-contain"

@@ -17,7 +17,7 @@ const Reviews = () => {
                         What our customers say
                     </h2>
                     <p className="text-base md:text-lg text-center text-accent-foreground/80 mt-6">
-                        We are proud to have helped thousands of customers across the globe. Here are some of their stories
+                        Hear from compliance professionals who achieved regulatory readiness with Lexura
                     </p>
                 </div>
             </Container>

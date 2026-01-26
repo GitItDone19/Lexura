@@ -13,59 +13,56 @@ type PLAN = {
 export const PLANS: PLAN[] = [
     {
         id: "free",
-        title: "Free",
-        desc: "Get started with essential tools for social media content creation",
+        title: "Starter",
+        desc: "Perfect for exploring AI compliance requirements",
         monthlyPrice: 0,
         yearlyPrice: 0,
-        buttonText: "Get Started",
+        buttonText: "Start Free",
         features: [
-            "Basic AI content generation",
-            "4 social media integrations",
-            "Community support",
-            "1 project limit",
-            "Standard analytics",
-            "Basic image generation"
+            "1 AI system assessment",
+            "Basic risk classification",
+            "Summary compliance report",
+            "Email support",
+            "7-day report access"
         ],
-        link: "https://stripe.com/free-plan-link"
+        link: "/app"
     },
     {
         id: "pro",
-        title: "Pro",
-        desc: "Unlock advance features for enhanced content and strategy",
-        monthlyPrice: 10,
-        yearlyPrice: 120,
+        title: "Professional",
+        desc: "For teams serious about staying compliant",
+        monthlyPrice: 99,
+        yearlyPrice: 990,
         badge: "Most Popular",
-        buttonText: "Upgrade to Pro",
+        buttonText: "Get Started",
         features: [
-            "Advanced AI content generation",
-            "10 social media integrations",
+            "Unlimited assessments",
+            "Detailed compliance reports",
+            "Priority action plans",
+            "Regulatory update alerts",
+            "PDF export & sharing",
             "Priority email support",
-            "10 project limit",
-            "Enhanced analytics & insights",
-            "Pro model image generation",
-            "Team collaboration tools",
-            "Custom branding options"
+            "12-month report history"
         ],
-        link: "https://stripe.com/pro-plan-link"
+        link: "/app"
     },
     {
         id: "enterprise",
         title: "Enterprise",
-        desc: "Tailored solutions for large organizations and agencies",
-        monthlyPrice: 15,
-        yearlyPrice: 180,
+        desc: "Custom solutions for large organizations",
+        monthlyPrice: 0,
+        yearlyPrice: 0,
         badge: "Contact Sales",
-        buttonText: "Upgrade to Enterprise",
+        buttonText: "Contact Sales",
         features: [
-            "Unlimited AI content generation",
-            "All social media integrations",
-            "Dedicated account manager",
-            "Unlimited projects",
-            "Custom analytics & reporting",
-            "Enterprise-grade security",
-            "Free updates",
-            // "24/7 priority support"
+            "Everything in Professional",
+            "Multi-organization support",
+            "API access & integrations",
+            "Dedicated compliance advisor",
+            "Custom reporting templates",
+            "SSO & advanced security",
+            "SLA guarantee"
         ],
-        link: "https://stripe.com/enterprise-plan-link"
+        link: "/contact"
     }
 ];

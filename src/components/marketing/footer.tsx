@@ -22,15 +22,15 @@ const Footer = () => {
                         <div className="flex items-center gap-2">
                             <Icons.icon className="w-5 h-5" />
                             <span className="text-xl font-medium">
-                                Luro
+                                Lexura
                             </span>
                         </div>
                         <p className="text-base max-w mt-4">
-                            Empower your business with our AI tools.
+                            Navigate EU AI Act compliance with confidence.
                         </p>
-                        <Button className="mt-8">
+                        <Button className="mt-8 bg-white text-black hover:bg-white/90">
                             <Link href="/app">
-                                Start for free
+                                Start Assessment
                             </Link>
                         </Button>
                     </div>
@@ -57,7 +57,7 @@ const Footer = () => {
             <Container>
                 <Wrapper className="pt-10 flex items-center justify-between relative">
                     <p className="text-sm text-secondary-foreground">
-                        &copy; {new Date().getFullYear()} Luro. All rights reserved.
+                        &copy; {new Date().getFullYear()} Lexura. All rights reserved.
                     </p>
                     <div className="flex items-center gap-4">
                         <Link href="#" className="p-1">

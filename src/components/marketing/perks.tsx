@@ -14,7 +14,7 @@ const Perks = () => {
                         Why Choose Lexura?
                     </h2>
                     <p className="text-base md:text-lg text-center text-accent-foreground/80 mt-6">
-                        Discover how Lexura helps businesses navigate EU AI Act compliance with confidence and clarity
+                        Discover how Lexura helps businesses navigate AI regulations with confidence and clarity
                     </p>
                 </div>
             </Container>

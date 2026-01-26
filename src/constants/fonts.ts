@@ -1,12 +1,8 @@
-import { Inter, DM_Sans, Roboto, Poppins } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import localFont from "next/font/local";
 
 export const satoshi2 = localFont({
     src: [
-        // {
-        //     path: "../../public/fonts/Satoshi-Thin.woff2",
-        //     weight: "200",
-        // },
         {
             path: "../../public/fonts/Satoshi-Light.woff2",
             weight: "300",
@@ -31,10 +27,10 @@ export const satoshi2 = localFont({
     variable: "--font-satoshi",
 });
 
-export const satoshi = Poppins({
+export const jakarta = Plus_Jakarta_Sans({
     subsets: ["latin"],
-    variable: "--font-inter",
-    weight: ["100", "200", "300", "400", "500", "600", "700","800", "900"],
+    variable: "--font-jakarta",
+    weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
 export const inter = Inter({

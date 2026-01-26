@@ -12,7 +12,7 @@ const CTA = () => {
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-12 bg-blue-500 blur-[10rem]"></div>
                     <div className="flex flex-col items-center justify-center w-full z-20">
                         <h2 className="text-4xl md:text-6xl font-heading heading font-semibold !leading-tight mt-6">
-                            Ready to Achieve <br className="hidden md:block" /> EU AI Act Compliance?
+                            Ready to Get <br className="hidden md:block" /> Compliant?
                         </h2>
                         <p className="text-base md:text-lg text-center text-accent-foreground/80 max-w-xl mx-auto mt-6">
                             Start your compliance assessment today and get actionable insights in minutes. Join businesses preparing for 2027.

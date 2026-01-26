@@ -48,8 +48,8 @@ const Navbar = () => {
                                 <Image 
                                     src="/images/logo.png" 
                                     alt="Lexura Logo" 
-                                    width={32} 
-                                    height={32}
+                                    width={24} 
+                                    height={24}
                                     quality={100}
                                     priority
                                     className="group-hover:scale-110 transition-transform object-contain"

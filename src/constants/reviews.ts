@@ -7,75 +7,75 @@ type REVIEW = {
 
 export const REVIEWS: REVIEW[] = [
     {
-        name: "Arjun Singh",
-        username: "@arjunsingh",
-        review: "This platform has revolutionized the way I manage my projects. The AI tools are a game-changer!",
-        img: "https://randomuser.me/api/portraits/men/1.jpg"
+        name: "Sarah Mitchell",
+        username: "@sarahmitchell",
+        review: "Lexura saved us months of work. We got our risk classification in minutes and knew exactly what we needed to do.",
+        img: "https://randomuser.me/api/portraits/women/1.jpg"
     },
     {
-        name: "Priya Nair",
-        username: "@priyanair",
-        review: "Absolutely love the seamless integration with social media. It's made my content creation process so much easier.",
-        img: "https://randomuser.me/api/portraits/women/2.jpg"
+        name: "Marcus Weber",
+        username: "@marcusweber",
+        review: "As a CTO, I needed clarity on our AI obligations. Lexura delivered a clear roadmap our board could understand.",
+        img: "https://randomuser.me/api/portraits/men/2.jpg"
     },
     {
-        name: "Rohan Mehta",
-        username: "@rohanmehta",
-        review: "The features offered here are unmatched. My productivity has soared since I started using this service.",
-        img: "https://randomuser.me/api/portraits/men/3.jpg"
+        name: "Elena Rodriguez",
+        username: "@elenarodriguez",
+        review: "The compliance reports are exactly what our legal team needed. Professional, detailed, and audit-ready.",
+        img: "https://randomuser.me/api/portraits/women/3.jpg"
     },
     {
-        name: "Sneha Patel",
-        username: "@snehapatel",
-        review: "Customer support is top-notch. They’re always ready to assist with any queries I have.",
-        img: "https://randomuser.me/api/portraits/women/4.jpg"
+        name: "Thomas Anderson",
+        username: "@thomasanderson",
+        review: "Finally, a tool that makes AI regulation understandable. Lexura turned a complex law into actionable steps.",
+        img: "https://randomuser.me/api/portraits/men/4.jpg"
     },
     {
-        name: "Ankit Sharma",
-        username: "@ankitsharma",
-        review: "The customization options available are perfect for my business needs. Highly recommended!",
-        img: "https://randomuser.me/api/portraits/men/5.jpg"
+        name: "Julia Henriksen",
+        username: "@juliahenriksen",
+        review: "We assessed 12 AI systems in one afternoon. The time savings alone made Lexura invaluable.",
+        img: "https://randomuser.me/api/portraits/women/5.jpg"
     },
     {
-        name: "Meera Kapoor",
-        username: "@meerakapoor",
-        review: "The intuitive design and ease of use make this platform stand out. It's a must-have for any business.",
-        img: "https://randomuser.me/api/portraits/women/6.jpg"
+        name: "David Chen",
+        username: "@davidchen",
+        review: "The priority action plan helped us focus resources where they matter most. Highly recommend for any AI team.",
+        img: "https://randomuser.me/api/portraits/men/6.jpg"
     },
     {
-        name: "Vikram Desai",
-        username: "@vikramdesai",
-        review: "From analytics to AI-powered tools, this service covers everything I need to grow my business.",
-        img: "https://randomuser.me/api/portraits/men/7.jpg"
+        name: "Sophie Laurent",
+        username: "@sophielaurent",
+        review: "Our investors asked about AI compliance. Thanks to Lexura, we had professional documentation ready.",
+        img: "https://randomuser.me/api/portraits/women/7.jpg"
     },
     {
-        name: "Anjali Menon",
-        username: "@anjalimenon",
-        review: "I’m impressed with how much value I’m getting at this price point. It's worth every penny!",
-        img: "https://randomuser.me/api/portraits/women/8.jpg"
+        name: "Michael O'Brien",
+        username: "@michaelobrien",
+        review: "The regulatory monitoring keeps us informed. We're always ahead of changes, never scrambling to catch up.",
+        img: "https://randomuser.me/api/portraits/men/8.jpg"
     },
     {
-        name: "Karan Gupta",
-        username: "@karangupta",
-        review: "The AI content generation is phenomenal. It saves me hours of work every week.",
-        img: "https://randomuser.me/api/portraits/men/9.jpg"
+        name: "Anna Kowalski",
+        username: "@annakowalski",
+        review: "From high-risk classification to compliance checklist - Lexura guided us every step of the way.",
+        img: "https://randomuser.me/api/portraits/women/9.jpg"
     },
     {
-        name: "Neha Verma",
-        username: "@nehaverma",
-        review: "I love how everything is organized in one place. It makes managing my tasks so much easier.",
-        img: "https://randomuser.me/api/portraits/women/10.jpg"
+        name: "James Peterson",
+        username: "@jamespeterson",
+        review: "Clean interface, clear explanations, actionable results. Exactly what compliance software should be.",
+        img: "https://randomuser.me/api/portraits/men/10.jpg"
     },
     {
-        name: "Siddharth Jain",
-        username: "@siddharthjain",
-        review: "Their platform is robust, and I have seen a significant improvement in my workflow since I started using it.",
-        img: "https://randomuser.me/api/portraits/men/11.jpg"
+        name: "Laura Bergström",
+        username: "@laurabergstrom",
+        review: "We needed to demonstrate compliance to enterprise clients. Lexura reports gave us instant credibility.",
+        img: "https://randomuser.me/api/portraits/women/11.jpg"
     },
     {
-        name: "Divya Iyer",
-        username: "@divyaiyer",
-        review: "Fantastic service! The updates and new features keep getting better and better.",
-        img: "https://randomuser.me/api/portraits/women/12.jpg"
+        name: "Robert Kim",
+        username: "@robertkim",
+        review: "The 3-step assessment is brilliant. Complex regulation simplified without losing the important details.",
+        img: "https://randomuser.me/api/portraits/men/12.jpg"
     }
 ];
