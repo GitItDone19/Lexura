@@ -14,10 +14,10 @@ const Features = () => {
                 <div className="flex flex-col items-center text-center max-w-2xl mx-auto">
                     <SectionBadge title="Features" />
                     <h2 className="text-2xl md:text-4xl lg:text-5xl font-heading font-medium !leading-snug mt-6">
-                        Create content faster <br /> and smarter
+                        Compliance Made <br /> Simple & Actionable
                     </h2>
                     <p className="text-base md:text-lg text-center text-accent-foreground/80 mt-6">
-                        Transform your social media strategy with Luro AI&apos;s cutting-edge features, designed to optimize your content creation and engagement like never before.
+                        Lexura provides everything you need to understand and achieve EU AI Act compliance through guided assessments, clear scoring, and expert recommendations.
                     </p>
                 </div>
             </Container>
@@ -40,10 +40,10 @@ const Features = () => {
                                     </div>
                                     <div className="flex flex-col">
                                         <h4 className="text-xl font-heading font-medium heading ">
-                                            Get advanced analytics
+                                            3-Step Guided Assessment
                                         </h4>
                                         <p className="text-sm md:text-base mt-2 text-muted-foreground">
-                                            Track your performance with detailed analytics and optimize to get better results.
+                                            Complete a comprehensive EU AI Act assessment in three simple steps with intelligent question routing.
                                         </p>
                                     </div>
                                 </div>
@@ -60,10 +60,10 @@ const Features = () => {
                                     </div>
                                     <div className="flex flex-col mt-auto">
                                         <h4 className="text-xl font-heading font-medium heading">
-                                            Content ideation
+                                            Smart Classification
                                         </h4>
                                         <p className="text-sm md:text-base mt-2 text-muted-foreground">
-                                            Generate ideas for your content with our AI-powered tools to create engaging posts in seconds.
+                                            Automatically classify your AI system based on EU AI Act risk categories with detailed explanations.
                                         </p>
                                     </div>
                                 </div>
@@ -98,10 +98,10 @@ const Features = () => {
                                 <div className="bento-card w-full flex-row gap-6">
                                     <div className="flex flex-col mb-auto">
                                         <h4 className="text-xl font-heading font-medium heading ">
-                                            Seamless integrations
+                                            Compliance Reports
                                         </h4>
                                         <p className="text-sm md:text-base mt-2 text-muted-foreground">
-                                            Connect your favorite tools and platforms to streamline your workflow and save time.
+                                            Generate comprehensive compliance reports with actionable recommendations and priority action plans.
                                         </p>
                                     </div>
                                     <div className="w-full h-28 relative">
@@ -121,10 +121,10 @@ const Features = () => {
                                     </div>
                                     <div className="flex flex-col mt-auto">
                                         <h4 className="text-xl font-heading font-medium heading ">
-                                            Image generation with AI
+                                            Visual Compliance Scores
                                         </h4>
                                         <p className="text-sm md:text-base mt-2 text-muted-foreground">
-                                            Create stunning images with AI-powered tools in seconds.
+                                            Track your compliance progress with clear visual indicators and detailed requirement breakdowns.
                                         </p>
                                     </div>
                                 </div>
@@ -136,10 +136,10 @@ const Features = () => {
                                     </div>
                                     <div className="flex flex-col mt-auto">
                                         <h4 className="text-xl font-heading font-medium heading ">
-                                            Hashtags suggestions
+                                            Ongoing Monitoring
                                         </h4>
                                         <p className="text-sm md:text-base mt-2 text-muted-foreground">
-                                            Get hashtag suggestions based on your content and audience to increase your reach and engagement.
+                                            Stay informed about regulatory changes and updates to ensure continuous compliance with the EU AI Act.
                                         </p>
                                     </div>
                                 </div>

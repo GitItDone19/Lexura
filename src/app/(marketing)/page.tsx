@@ -1,5 +1,6 @@
 import { Background, Companies, Container, CTA, Hero, Perks, Pricing, Reviews, Wrapper } from "@/components";
 import { Spotlight } from "@/components/ui/spotlight";
+import Features from "@/components/marketing/features";
 
 const HomePage = () => {
     return (
@@ -15,6 +16,9 @@ const HomePage = () => {
                 <Container className="py-8 lg:py-20">
                     <Companies />
                 </Container>
+                <div id="features">
+                    <Features />
+                </div>
                 <Perks />
                 <Pricing />
                 <Reviews />
