@@ -45,7 +45,7 @@ export async function GET() {
       : 0;
 
     return NextResponse.json({
-      totalAssessments,
+      totalScans: totalAssessments,
       inProgress,
       completed,
       avgScore: Math.round(avgScore * 10) / 10,

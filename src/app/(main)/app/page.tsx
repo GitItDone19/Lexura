@@ -22,40 +22,41 @@ import { AssessmentCard } from '@/components/dashboard/assessment-card';
 import { StatsCard } from '@/components/dashboard/stats-card';
 
 interface DashboardStats {
-    totalAssessments: number;
+    totalScans: number;
     inProgress: number;
     completed: number;
     avgScore: number;
     userRole: 'CLIENT' | 'ADMIN';
 }
 
-interface Assessment {
+interface Scan {
     id: string;
     name: string;
     status: 'IN_PROGRESS' | 'COMPLETED';
     score: number | null;
     updatedAt: string;
+    progress: number;
 }
 
 const Page = () => {
     const [stats, setStats] = useState<DashboardStats | null>(null);
-    const [assessments, setAssessments] = useState<Assessment[]>([]);
+    const [scans, setScans] = useState<Scan[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [statsRes, assessmentsRes] = await Promise.all([
+                const [statsRes, scansRes] = await Promise.all([
                     fetch('/api/dashboard/stats'),
                     fetch('/api/assessments/recent')
                 ]);
 
-                if (statsRes.ok && assessmentsRes.ok) {
+                if (statsRes.ok && scansRes.ok) {
                     const statsData = await statsRes.json();
-                    const assessmentsData = await assessmentsRes.json();
+                    const scansData = await scansRes.json();
                     setStats(statsData);
-                    setAssessments(assessmentsData);
+                    setScans(scansData);
                 }
             } catch (error) {
                 console.error('Failed to fetch dashboard data:', error);
@@ -67,8 +68,8 @@ const Page = () => {
         fetchData();
     }, []);
 
-    const filteredAssessments = assessments.filter(assessment =>
-        assessment.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredScans = scans.filter(scan =>
+        scan.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     if (loading) {
@@ -122,7 +123,7 @@ const Page = () => {
                                     )}
                                 </div>
                                 <p className="text-zinc-400 text-xs">
-                                    Monitor and manage your EU AI Act compliance assessments
+                                    Monitor and manage your EU AI Act compliance scans
                                 </p>
                             </div>
                             <Button 
@@ -132,7 +133,7 @@ const Page = () => {
                             >
                                 <Link href="/app/assessment/new" className="gap-1.5">
                                     <PlusIcon className="w-4 h-4" />
-                                    New Assessment
+                                    New Scan
                                 </Link>
                             </Button>
                         </div>
@@ -142,9 +143,9 @@ const Page = () => {
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         <Container>
                             <StatsCard
-                                title="Total Assessments"
-                                value={stats.totalAssessments}
-                                subtitle="All time assessments"
+                                title="Total Scans"
+                                value={stats.totalScans}
+                                subtitle="All time scans"
                                 icon={BarChart3Icon}
                             />
                         </Container>
@@ -153,7 +154,7 @@ const Page = () => {
                             <StatsCard
                                 title="In Progress"
                                 value={stats.inProgress}
-                                subtitle="Active assessments"
+                                subtitle="Active scans"
                                 icon={ClockIcon}
                             />
                         </Container>
@@ -162,7 +163,7 @@ const Page = () => {
                             <StatsCard
                                 title="Completed"
                                 value={stats.completed}
-                                subtitle="Finished assessments"
+                                subtitle="Finished scans"
                                 icon={CheckCircle2Icon}
                             />
                         </Container>
@@ -177,8 +178,8 @@ const Page = () => {
                         </Container>
                     </div>
 
-                    {/* Assessments Section */}
-                    {assessments.length > 0 && (
+                    {/* Scans Section */}
+                    {scans.length > 0 && (
                         <Container delay={0.4}>
                             <div className="space-y-4">
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
@@ -186,18 +187,18 @@ const Page = () => {
                                         <div className="flex items-center gap-2">
                                             <div className="h-5 w-0.5 bg-gradient-to-b from-blue-500 to-blue-600 rounded-full" />
                                             <h2 className="text-base text-white font-semibold">
-                                                Assessments in Progress
+                                                Recent Scans
                                             </h2>
                                         </div>
                                         <p className="text-xs text-zinc-500 ml-3.5">
-                                            Your active compliance assessments
+                                            Your most recent compliance scans
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="relative flex-1 md:w-64">
                                             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500" />
                                             <Input
-                                                placeholder="Search assessments..."
+                                                placeholder="Search scans..."
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
                                                 className="pl-9 h-9 text-xs bg-zinc-950 border-zinc-800 focus:border-blue-500 text-white placeholder:text-zinc-500"
@@ -216,17 +217,18 @@ const Page = () => {
                                     </div>
                                 </div>
 
-                                {/* Assessment Cards Grid */}
-                                {filteredAssessments.length > 0 ? (
+                                {/* Scan Cards Grid */}
+                                {filteredScans.length > 0 ? (
                                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                        {filteredAssessments.map((assessment) => (
+                                        {filteredScans.map((scan) => (
                                             <AssessmentCard
-                                                key={assessment.id}
-                                                id={assessment.id}
-                                                name={assessment.name}
-                                                status={assessment.status}
-                                                score={assessment.score}
-                                                updatedAt={assessment.updatedAt}
+                                                key={scan.id}
+                                                id={scan.id}
+                                                name={scan.name}
+                                                status={scan.status}
+                                                score={scan.score}
+                                                updatedAt={scan.updatedAt}
+                                                progress={scan.progress}
                                             />
                                         ))}
                                     </div>
@@ -236,7 +238,7 @@ const Page = () => {
                                             <SearchIcon className="w-6 h-6 text-zinc-600" />
                                         </div>
                                         <h3 className="text-sm font-semibold text-white mb-1.5">
-                                            No assessments found
+                                            No scans found
                                         </h3>
                                         <p className="text-xs text-zinc-500 mb-4 max-w-sm mx-auto">
                                             Try adjusting your search terms
@@ -248,7 +250,7 @@ const Page = () => {
                     )}
 
                     {/* Empty State */}
-                    {assessments.length === 0 && (
+                    {scans.length === 0 && (
                         <Container delay={0.4}>
                             <Card className="bg-zinc-950 border-zinc-800">
                                 <CardContent className="py-12">
@@ -257,15 +259,15 @@ const Page = () => {
                                             <FileTextIcon className="w-6 h-6 text-zinc-600" />
                                         </div>
                                         <h3 className="text-sm font-semibold text-white mb-1.5">
-                                            No assessments yet
+                                            No scans yet
                                         </h3>
                                         <p className="text-xs text-zinc-500 mb-4 max-w-sm mx-auto">
-                                            Get started by creating your first compliance assessment
+                                            Get started by creating your first compliance scan
                                         </p>
                                         <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs">
                                                 <Link href="/app/assessment/new" className="gap-1.5">
                                                     <PlusIcon className="w-3.5 h-3.5" />
-                                                    Create Your First Assessment
+                                                    Create Your First Scan
                                                 </Link>
                                             </Button>
                                     </div>

@@ -2,6 +2,7 @@ import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { BlurText } from "../ui/blur-text";
 import { Button } from "../ui/button";
+import { BorderBeam } from "../ui/border-beam";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Container from "../global/container";
@@ -49,17 +50,28 @@ const Hero = () => {
                 </Container>
             </div>
             <Container delay={0.3}>
-                <div className="relative mx-auto w-full max-w-[95vw] rounded-xl lg:rounded-[32px] border border-neutral-200/50 p-2 backdrop-blur-lg border-neutral-700 bg-neutral-800/50 md:p-4 mt-12">
-                    <div className="absolute top-1/4 left-1/2 -z-10 gradient w-3/4 -translate-x-1/2 h-1/4 -translate-y-1/2 inset-0 blur-[10rem]"></div>
-
-                    <div className="rounded-lg lg:rounded-[24px] border p-2 border-neutral-700 bg-black">
+                <div className="relative pt-48 pb-0 md:pt-56 md:pb-0 bg-transparent w-full max-w-7xl mx-auto px-6">
+                    {/* Blue gradient glow effect */}
+                    <div className="absolute top-[20%] md:top-[25%] left-1/2 gradient w-3/4 -translate-x-1/2 h-1/4 md:h-1/3 blur-[5rem] animate-image-glow"></div>
+                    
+                    {/* Dashboard image container */}
+                    <div className="-m-2 rounded-xl p-2 ring-1 ring-inset ring-foreground/20 lg:-m-4 lg:rounded-2xl bg-opacity-50 backdrop-blur-3xl relative">
+                        <BorderBeam
+                            size={250}
+                            duration={12}
+                            delay={9}
+                        />
                         <Image
                             src="/images/dashboard.png"
-                            alt="dashboard"
+                            alt="Dashboard"
                             width={1920}
                             height={1080}
-                            className="rounded-lg lg:rounded-[20px] w-full h-auto"
+                            quality={100}
+                            className="rounded-md lg:rounded-xl bg-foreground/10 ring-1 ring-border w-full h-auto"
                         />
+                        {/* Bottom gradient fade */}
+                        <div className="absolute -bottom-2 inset-x-0 w-full h-1/4 bg-gradient-to-t from-background z-40"></div>
+                        <div className="absolute bottom-0 md:-bottom-4 inset-x-0 w-full h-1/6 bg-gradient-to-t from-background z-50"></div>
                     </div>
                 </div>
             </Container>

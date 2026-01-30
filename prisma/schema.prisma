@@ -53,6 +53,7 @@ model Assessment {
   overallScore    Float?
   requirements    Json?
   actionPlan      Json?
+  aiGeneratedReport String?        @db.Text
   
   // Timestamps
   createdAt       DateTime         @default(now())

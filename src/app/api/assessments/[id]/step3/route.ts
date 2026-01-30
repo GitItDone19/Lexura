@@ -15,7 +15,25 @@ export async function POST(
 
     const body = await request.json();
 
-    // Update the assessment with step3 data
+    // Check if this is a skip to minimal risk (EU scope = no)
+    if (body.skipToMinimalRisk) {
+      const assessment = await prisma.assessment.update({
+        where: {
+          id: params.id,
+          userId: user.id,
+        },
+        data: {
+          status: 'COMPLETED',
+          classification: 'MINIMAL_RISK',
+          step2Data: { euScopeSkipped: true },
+          step3Data: { minimalRisk: true },
+          updatedAt: new Date(),
+        },
+      });
+      return NextResponse.json(assessment);
+    }
+
+    // Normal step3 data save
     const assessment = await prisma.assessment.update({
       where: {
         id: params.id,

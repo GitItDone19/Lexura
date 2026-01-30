@@ -384,3 +384,48 @@ rogress Bar Animation */
 .animate-border-flow {
   animation: border-flow 3s linear infinite;
 }
+
+/* Dashboard Preview Gradient */
+.gradient {
+  background: conic-gradient(
+    from 230.29deg at 51.63% 52.16%,
+    rgb(59, 130, 246) 0deg,
+    rgb(37, 99, 235) 67.5deg,
+    rgb(29, 78, 216) 198.75deg,
+    rgb(30, 64, 175) 251.25deg,
+    rgb(30, 58, 138) 301.88deg,
+    rgb(59, 130, 246) 360deg
+  );
+}
+
+@keyframes image-glow {
+  0% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.74, 0.25, 0.76, 1);
+  }
+  10% {
+    opacity: 0.5;
+    animation-timing-function: cubic-bezier(0.12, 0.01, 0.08, 0.99);
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.animate-image-glow {
+  animation: image-glow 4s ease-out 0.6s forwards;
+}
+
+/* Shimmer animation for progress bar */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}

@@ -14,6 +14,7 @@ import { classifyAISystem, ClassificationType } from '@/lib/classification-logic
 interface Question {
   id: string;
   label: string;
+  helpText?: string;
   type: 'radio';
   options: { value: string; label: string; description?: string }[];
 }
@@ -25,6 +26,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'riskManagement',
     label: 'Do you have a documented risk management system for this AI?',
+    helpText: 'Article 9 requires a continuous process to identify and analyze risks to health, safety, and fundamental rights throughout the AI lifecycle.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, established and continuously maintained' },
@@ -35,6 +37,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'riskMitigation',
     label: 'Have you identified and documented risks to health, safety, and fundamental rights, with mitigation measures?',
+    helpText: 'You must identify foreseeable risks and implement measures to reduce them to an acceptable level.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, with documented mitigations' },
@@ -45,6 +48,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'dataDocumentation',
     label: 'Is your training, validation, and testing data formally documented?',
+    helpText: 'Article 10 sets quality criteria for datasets. You must document your data collection, labeling, and filtering processes.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, with data sheets and quality records' },
@@ -55,6 +59,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'biasTest',
     label: 'Have you examined training data for biases and taken corrective measures?',
+    helpText: 'You must test for possible biases and take steps to address them, especially regarding protected characteristics.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, formal bias testing with corrections' },
@@ -65,6 +70,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'technicalDocs',
     label: 'Do you maintain technical documentation covering design, development, capabilities, limitations, and intended purpose?',
+    helpText: 'Article 11 requires detailed docs on system design, logic, and architecture so authorities can verify compliance.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, comprehensive and up-to-date' },
@@ -75,6 +81,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'logging',
     label: 'Does the system automatically log operations to enable traceability and issue identification?',
+    helpText: 'Article 12 requires High-Risk AI to keep logs for traceability of its functioning throughout its lifetime.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, comprehensive automatic logging' },
@@ -85,6 +92,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'instructions',
     label: 'Have you created clear instructions for deployers covering proper use, capabilities, and limitations?',
+    helpText: 'You must provide instructions of use that are clear, comprehensive, and accessible to deployers.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, detailed instructions provided' },
@@ -95,6 +103,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'oversightDesign',
     label: 'Is the system designed to enable effective human oversight, including ability to understand outputs and intervene?',
+    helpText: 'Article 14 says humans must be able to understand the AI outputs and intervene or shut it down if something goes wrong.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, oversight tools built-in' },
@@ -105,6 +114,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'overrideCapability',
     label: 'Can humans override decisions and stop the system when needed?',
+    helpText: 'Human oversight must include the ability to override or disregard AI outputs and stop the system.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, easily accessible controls' },
@@ -115,6 +125,7 @@ const highRiskProviderQuestions: Question[] = [
   {
     id: 'accuracySecurity',
     label: 'Have you tested and documented accuracy levels, and implemented cybersecurity measures against manipulation?',
+    helpText: 'You must achieve appropriate levels of accuracy and implement measures to protect against cybersecurity threats.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, tested with security measures in place' },
@@ -128,6 +139,7 @@ const highRiskDeployerQuestions: Question[] = [
   {
     id: 'providerInstructions',
     label: 'Did the provider give you instructions for use?',
+    helpText: 'Article 26(1) states you must use the system according to the instructions of use provided by the provider.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, comprehensive documentation' },
@@ -138,6 +150,7 @@ const highRiskDeployerQuestions: Question[] = [
   {
     id: 'understanding',
     label: 'Do you understand the system\'s intended purpose, capabilities, and limitations?',
+    helpText: 'You must ensure you understand how the system works and what it can and cannot do.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, fully understand' },
@@ -148,6 +161,7 @@ const highRiskDeployerQuestions: Question[] = [
   {
     id: 'humanReview',
     label: 'Is there human review of AI outputs before final decisions are made?',
+    helpText: 'Article 14 (Human Oversight) - High-risk decisions should not be 100% automated. A human must verify the result.',
     type: 'radio',
     options: [
       { value: 'always', label: 'Always — human makes final decision' },
@@ -158,6 +172,7 @@ const highRiskDeployerQuestions: Question[] = [
   {
     id: 'overrideCapability',
     label: 'Can staff override or disregard the AI\'s output when needed?',
+    helpText: 'Humans must have the ability to override or disregard AI recommendations when appropriate.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, easily' },
@@ -168,6 +183,7 @@ const highRiskDeployerQuestions: Question[] = [
   {
     id: 'training',
     label: 'Are personnel using this AI trained on how it works?',
+    helpText: 'You must ensure that people using the system have appropriate training and competence.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, formal training provided' },
@@ -178,6 +194,7 @@ const highRiskDeployerQuestions: Question[] = [
   {
     id: 'monitoring',
     label: 'Do you ensure input data quality and monitor the system for issues or unexpected behavior?',
+    helpText: 'Article 26(5) requires you to monitor the operation of the high-risk AI system and report any serious incidents.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, formal data checks and ongoing monitoring' },
@@ -188,6 +205,7 @@ const highRiskDeployerQuestions: Question[] = [
   {
     id: 'incidentReporting',
     label: 'Do you have a process to report serious incidents or malfunctions to the provider?',
+    helpText: 'You must report serious incidents to the provider and relevant authorities.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, defined escalation process' },
@@ -198,21 +216,12 @@ const highRiskDeployerQuestions: Question[] = [
   {
     id: 'transparency',
     label: 'Are affected persons (e.g., job applicants, customers) informed that AI is being used in decisions about them?',
+    helpText: 'Article 13 & 52. Affected persons have a right to know they are being evaluated or interacted with by an AI.',
     type: 'radio',
     options: [
-      { value: 'yes', label: 'Yes, clear and prominent notice' },
-      { value: 'policy', label: 'Mentioned in privacy policy or terms' },
+      { value: 'yes', label: 'Yes, clear notice provided' },
+      { value: 'policy', label: 'Mentioned in privacy policy' },
       { value: 'no', label: 'No disclosure' },
-    ],
-  },
-  {
-    id: 'rightsAssessment',
-    label: 'Have you assessed this AI\'s potential impact on fundamental rights (discrimination, privacy, fairness)?',
-    type: 'radio',
-    options: [
-      { value: 'yes', label: 'Yes, documented assessment' },
-      { value: 'informal', label: 'Informal consideration' },
-      { value: 'no', label: 'No' },
     ],
   },
 ];
@@ -220,53 +229,45 @@ const highRiskDeployerQuestions: Question[] = [
 const limitedRiskQuestions: Question[] = [
   {
     id: 'aiDisclosure',
-    label: 'If users interact directly with this AI (e.g., chatbot), are they informed they are interacting with AI?',
+    label: 'Are users clearly informed they are interacting with AI?',
+    helpText: 'Article 50(1). Transparency is the main rule for Limited Risk systems. Users must know they aren\'t talking to a human.',
     type: 'radio',
     options: [
-      { value: 'yes', label: 'Yes, clear notice provided' },
-      { value: 'mentioned', label: 'Mentioned but not prominent' },
+      { value: 'yes', label: 'Yes, clear and prominent notice' },
+      { value: 'partial', label: 'Mentioned but not prominent' },
       { value: 'no', label: 'No disclosure' },
-      { value: 'na', label: 'N/A — no direct user interaction' },
-    ],
-  },
-  {
-    id: 'emotionDisclosure',
-    label: 'If this AI recognizes emotions or uses biometric categorization, are subjects informed?',
-    type: 'radio',
-    options: [
-      { value: 'yes', label: 'Yes, informed before exposure' },
-      { value: 'policy', label: 'Mentioned in terms/policy' },
-      { value: 'no', label: 'No' },
-      { value: 'na', label: 'N/A — no emotion/biometric features' },
     ],
   },
   {
     id: 'syntheticLabeling',
-    label: 'If this AI generates synthetic content (images, video, audio, text), is the output labeled as AI-generated?',
+    label: 'Is AI-generated content clearly labeled as artificial?',
+    helpText: 'Article 50(4). Images, audio, or video created by AI must be marked so they aren\'t mistaken for authentic content.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, clearly labeled' },
       { value: 'sometimes', label: 'Sometimes labeled' },
       { value: 'no', label: 'No labeling' },
-      { value: 'na', label: 'N/A — no synthetic content generation' },
+      { value: 'na', label: 'N/A — no content generation' },
+    ],
+  },
+  {
+    id: 'emotionDisclosure',
+    label: 'If using emotion recognition, are people informed?',
+    helpText: 'Article 50(2). People must be informed when emotion recognition systems are being used on them.',
+    type: 'radio',
+    options: [
+      { value: 'yes', label: 'Yes, clear disclosure' },
+      { value: 'no', label: 'No disclosure' },
+      { value: 'na', label: 'N/A — no emotion recognition' },
     ],
   },
 ];
 
 const gpaiProviderQuestions: Question[] = [
   {
-    id: 'compute',
-    label: 'What compute was used to train this model?',
-    type: 'radio',
-    options: [
-      { value: 'less', label: 'Less than 10^25 FLOPS' },
-      { value: 'more', label: '10^25 FLOPS or more' },
-      { value: 'unknown', label: 'Unknown' },
-    ],
-  },
-  {
     id: 'documentation',
-    label: 'Do you have technical documentation including model capabilities, limitations, and training methodology?',
+    label: 'Do you maintain technical documentation for the model?',
+    helpText: 'GPAI Providers must keep technical documentation for the AI Office to verify training and model benchmarks.',
     type: 'radio',
     options: [
       { value: 'yes', label: 'Yes, comprehensive' },
@@ -275,22 +276,23 @@ const gpaiProviderQuestions: Question[] = [
     ],
   },
   {
-    id: 'trainingSummary',
-    label: 'Can you provide a sufficiently detailed summary of training data content if requested by authorities?',
+    id: 'copyrightPolicy',
+    label: 'Do you have a copyright compliance policy for training data?',
+    helpText: 'GPAI models must respect EU copyright law during training, even if trained outside the EU.',
     type: 'radio',
     options: [
-      { value: 'yes', label: 'Yes' },
-      { value: 'partial', label: 'Partially' },
+      { value: 'yes', label: 'Yes, formal policy' },
+      { value: 'partial', label: 'Informal approach' },
       { value: 'no', label: 'No' },
     ],
   },
   {
-    id: 'copyrightPolicy',
-    label: 'Do you have a policy on copyright compliance for training data?',
+    id: 'publicSummary',
+    label: 'Have you published a summary of training data?',
+    helpText: 'You must make publicly available a sufficiently detailed summary of the content used for training.',
     type: 'radio',
     options: [
-      { value: 'public', label: 'Yes, publicly available' },
-      { value: 'internal', label: 'Yes, internal only' },
+      { value: 'yes', label: 'Yes, published' },
       { value: 'no', label: 'No' },
     ],
   },
@@ -314,31 +316,37 @@ export default function Step3Page() {
         const response = await fetch(`/api/assessments/${assessmentId}`);
         if (response.ok) {
           const data = await response.json();
-          
-          // Classify based on step1 and step2 data
+
           if (data.step1Data && data.step2Data) {
             const result = classifyAISystem(data.step1Data, data.step2Data);
             setClassification(result.classification);
+          } else {
+            // If step1 or step2 data is missing, redirect back
+            console.error('Missing step data');
+            router.push(`/app/assessment/${assessmentId}`);
+            return;
           }
-          
+
           if (data.step3Data) {
             setFormData(data.step3Data);
           }
+        } else {
+          console.error('Failed to fetch assessment');
+          router.push('/app');
         }
       } catch (error) {
         console.error('Error fetching assessment:', error);
+        router.push('/app');
       } finally {
         setLoading(false);
       }
     };
 
     fetchAndClassify();
-  }, [assessmentId]);
+  }, [assessmentId, router]);
 
   const getQuestions = (): Question[] => {
     switch (classification) {
-      case 'PROHIBITED':
-        return prohibitedQuestions;
       case 'HIGH_RISK_PROVIDER':
         return highRiskProviderQuestions;
       case 'HIGH_RISK_DEPLOYER':
@@ -347,8 +355,8 @@ export default function Step3Page() {
         return limitedRiskQuestions;
       case 'GPAI_PROVIDER':
         return gpaiProviderQuestions;
-      case 'MINIMAL_RISK':
-        return [];
+      case 'GPAI_DEPLOYER':
+        return highRiskDeployerQuestions;
       default:
         return [];
     }
@@ -374,29 +382,67 @@ export default function Step3Page() {
 
   const handleComplete = async () => {
     setCompleting(true);
-
     try {
-      // Save step3 data
+      // Save step 3 data
+      console.log('Step 1: Saving step 3 data...');
       await fetch(`/api/assessments/${assessmentId}/step3`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, classification }),
       });
 
-      // Mark as completed
+      // Fetch complete assessment data for report generation
+      console.log('Step 2: Fetching assessment data...');
+      const assessmentResponse = await fetch(`/api/assessments/${assessmentId}`);
+      const assessmentData = await assessmentResponse.json();
+      console.log('Assessment data:', assessmentData);
+
+      // Generate AI report
+      console.log('Step 3: Generating AI report...');
+      const reportPayload = {
+        assessmentData: {
+          step1Data: assessmentData.step1Data,
+          step2Data: assessmentData.step2Data,
+          step3Data: { ...formData, classification },
+          classification,
+        },
+      };
+      console.log('Report payload:', reportPayload);
+
+      const reportResponse = await fetch('/api/generate-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reportPayload),
+      });
+
+      if (!reportResponse.ok) {
+        const errorData = await reportResponse.json();
+        console.error('Report generation failed:', errorData);
+        throw new Error(errorData.error || 'Failed to generate report');
+      }
+
+      const { report, summary } = await reportResponse.json();
+      console.log('Step 4: Report generated successfully!');
+      console.log('Generated summary:', summary);
+      console.log('Generated report preview:', report.substring(0, 200) + '...');
+
+      // Update assessment with generated report and mark as completed
+      console.log('Step 5: Saving report to database...');
       await fetch(`/api/assessments/${assessmentId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           status: 'COMPLETED',
-          completedAt: new Date().toISOString()
+          completedAt: new Date().toISOString(),
+          aiGeneratedReport: report,
         }),
       });
 
+      console.log('Step 6: Redirecting to report page...');
       router.push(`/app/assessment/${assessmentId}/report`);
     } catch (error) {
       console.error('Error completing assessment:', error);
-      alert('An error occurred. Please try again.');
+      alert('Failed to generate report. Please try again. Check console for details.');
     } finally {
       setCompleting(false);
     }
@@ -530,6 +576,16 @@ export default function Step3Page() {
   }
 
   const currentQuestionData = questions[currentQuestion];
+  
+  // Safety check - if currentQuestionData is undefined, show loading
+  if (!currentQuestionData) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2Icon className="w-8 h-8 animate-spin text-blue-500" />
+      </div>
+    );
+  }
+
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const isLastQuestion = currentQuestion === questions.length - 1;
   const isFirstQuestion = currentQuestion === 0;
@@ -550,15 +606,9 @@ export default function Step3Page() {
                 {currentQuestion + 1} of {questions.length}
               </div>
             </div>
-            <div className="relative h-2 bg-zinc-900 rounded-full overflow-hidden">
-              <div
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
             
             {/* Question indicators */}
-            <div className="flex justify-between mt-4 gap-1">
+            <div className="flex justify-between gap-1">
               {questions.map((_, index) => (
                 <div
                   key={index}
@@ -588,10 +638,27 @@ export default function Step3Page() {
                 )}
               >
                 {/* Question Label */}
-                <div>
-                  <Label className="text-2xl md:text-3xl font-bold text-white leading-tight">
-                    {currentQuestionData.label}
-                  </Label>
+                <div className="group relative">
+                  <div className="flex items-start justify-between gap-4">
+                    <Label className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                      {currentQuestionData.label}
+                    </Label>
+                    {currentQuestionData.helpText && (
+                      <div className="mt-1 flex-shrink-0">
+                        <div className="peer p-2 rounded-full bg-zinc-900 border border-zinc-800 text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/50 transition-all cursor-help">
+                          <AlertTriangleIcon className="w-5 h-5 rotate-180" />
+                        </div>
+
+                        {/* The Hover Tooltip */}
+                        <div className="absolute left-0 top-full mt-4 w-full z-20 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible transition-all duration-300 transform translate-y-2 peer-hover:translate-y-0">
+                          <div className="bg-blue-600 p-4 rounded-xl shadow-2xl text-white text-sm leading-relaxed border border-blue-400/30">
+                            <p>{currentQuestionData.helpText}</p>
+                            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-blue-600 rotate-45" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <p className="text-sm text-zinc-500 mt-2">
                     Question {currentQuestion + 1} of {questions.length}
                   </p>
@@ -612,7 +679,7 @@ export default function Step3Page() {
                         className={cn(
                           "flex items-start space-x-3 p-4 rounded-lg border transition-all cursor-pointer",
                           currentValue === option.value
-                            ? "border-green-500 bg-green-500/10"
+                            ? "border-blue-500 bg-blue-500/10"
                             : "border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/50"
                         )}
                         onClick={() => setFormData({ ...formData, [currentQuestionData.id]: option.value })}
@@ -650,7 +717,7 @@ export default function Step3Page() {
                     <Button
                       onClick={handleComplete}
                       disabled={!isCurrentAnswered || completing}
-                      className="bg-green-600 hover:bg-green-700 text-white"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       {completing ? (
                         <>
@@ -659,7 +726,7 @@ export default function Step3Page() {
                         </>
                       ) : (
                         <>
-                          Complete Assessment
+                          Complete Scan
                           <CheckIcon className="w-4 h-4 ml-2" />
                         </>
                       )}
@@ -668,7 +735,7 @@ export default function Step3Page() {
                     <Button
                       onClick={handleNext}
                       disabled={!isCurrentAnswered}
-                      className="bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
+                      className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
                     >
                       Next
                       <CheckIcon className="w-4 h-4 ml-2" />

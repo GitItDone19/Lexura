@@ -11,9 +11,14 @@ const HomePage = () => {
                         className="-top-40 left-0 md:left-60 md:-top-20"
                         fill="rgba(255, 255, 255, 0.5)"
                     />
-                    <Hero />
                 </Container>
-                <Container className="py-8 lg:py-20">
+            </Wrapper>
+            {/* Hero section outside wrapper for full width */}
+            <div className="relative -mt-20 mb-0">
+                <Hero />
+            </div>
+            <Wrapper>
+                <Container className="py-0">
                     <Companies />
                 </Container>
                 <Perks />

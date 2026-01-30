@@ -8,13 +8,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { ArrowRightIcon, ArrowLeftIcon, Loader2Icon, CheckIcon } from 'lucide-react';
+import { ArrowRightIcon, ArrowLeftIcon, Loader2Icon, CheckIcon, AlertTriangleIcon } from 'lucide-react';
 import { Container } from '@/components';
 import { cn } from '@/functions';
 
 interface Question {
   id: keyof FormData;
   label: string;
+  helpText?: string;
   placeholder?: string;
   type: 'input' | 'textarea' | 'multi-select' | 'radio' | 'dual-radio';
   rows?: number;
@@ -31,7 +32,6 @@ interface FormData {
   sector: string;
   decisionImpact: string[];
   affectedPersons: string[];
-  euScope: string;
   productType: string;
   biometricProcessing: string;
   sensitiveCaps: string[];
@@ -41,6 +41,7 @@ const questions: Question[] = [
   {
     id: 'sector',
     label: 'What sector does this AI primarily operate in?',
+    helpText: 'High-risk sectors are specifically listed in Annex III of the EU AI Act. For example, systems used in Employment, Education, or Healthcare have higher compliance burdens.',
     type: 'radio',
     required: true,
     options: [
@@ -60,7 +61,8 @@ const questions: Question[] = [
   },
   {
     id: 'decisionImpact',
-    label: 'What does this AI decide, recommend, or influence? (Select all that apply)',
+    label: 'What does this AI decide, recommend, or influence?',
+    helpText: 'If the AI makes "significant decisions" that impact human lives (like hiring, credit, or medical treatments), it is almost always classified as High-Risk.',
     type: 'multi-select',
     required: true,
     options: [
@@ -81,7 +83,8 @@ const questions: Question[] = [
   },
   {
     id: 'affectedPersons',
-    label: 'Who is affected by this AI\'s outputs? (Select all that apply)',
+    label: 'Who is affected by this AI\'s outputs?',
+    helpText: 'The risk level depends on whose rights are at stake. Vulnerable groups like migrants or students often trigger higher scrutiny.',
     type: 'multi-select',
     required: true,
     options: [
@@ -97,50 +100,43 @@ const questions: Question[] = [
     ],
   },
   {
-    id: 'euScope',
-    label: 'Where and how is this AI deployed?',
-    type: 'dual-radio',
+    id: 'productType',
+    label: 'Is this AI embedded in a physical product?',
+    helpText: 'Article 6(1). If an AI is a safety component of a regulated product (like medical devices, machinery, or toys), it is automatically High-Risk.',
+    type: 'radio',
     required: true,
     options: [
-      { value: 'yes', label: 'Yes' },
-      { value: 'no', label: 'No' },
-      { value: 'not_sure', label: 'Not sure' },
+      { value: 'medical', label: 'Yes — medical device' },
+      { value: 'machinery', label: 'Yes — machinery or equipment' },
+      { value: 'vehicle', label: 'Yes — vehicle or transport' },
+      { value: 'other_product', label: 'Yes — other product' },
+      { value: 'software', label: 'No — software/digital service only' },
     ],
-    subQuestion: {
-      id: 'productType',
-      label: 'Is it embedded in a physical product?',
-      options: [
-        { value: 'medical', label: 'Yes — medical device' },
-        { value: 'machinery', label: 'Yes — machinery or equipment' },
-        { value: 'vehicle', label: 'Yes — vehicle or transport' },
-        { value: 'other_product', label: 'Yes — other product' },
-        { value: 'software', label: 'No — software/digital service only' },
-      ],
-    },
   },
   {
     id: 'biometricProcessing',
     label: 'Does this AI process biometric data to identify people?',
+    helpText: 'Article 5 & 26. Real-time biometric ID in public spaces is PROHIBITED. Remote identification is High-Risk. 1:1 verification is Limited-Risk.',
     type: 'radio',
     required: true,
     options: [
-      { 
-        value: 'realtime_public', 
+      {
+        value: 'realtime_public',
         label: 'Yes, real-time identification in publicly accessible spaces',
         description: 'Live biometric identification in public areas'
       },
-      { 
-        value: 'remote', 
+      {
+        value: 'remote',
         label: 'Yes, remote biometric identification (not real-time or not public)',
         description: 'Post-event or non-public biometric identification'
       },
-      { 
-        value: 'verification', 
+      {
+        value: 'verification',
         label: 'Yes, biometric verification (1:1 matching only)',
         description: 'Confirming identity against a single reference'
       },
-      { 
-        value: 'no', 
+      {
+        value: 'no',
         label: 'No biometric identification',
         description: 'System does not use biometric data'
       },
@@ -148,7 +144,8 @@ const questions: Question[] = [
   },
   {
     id: 'sensitiveCaps',
-    label: 'Does this AI have any of these capabilities? (Select all that apply)',
+    label: 'Does this AI have any of these sensitive capabilities?',
+    helpText: 'Certain capabilities like "Social Scoring" are banned. Others like "Emotion Recognition" or "Deepfakes" require strict transparency labels.',
     type: 'multi-select',
     required: true,
     options: [
@@ -176,7 +173,6 @@ export default function Step2Page() {
     sector: '',
     decisionImpact: [],
     affectedPersons: [],
-    euScope: '',
     productType: '',
     biometricProcessing: '',
     sensitiveCaps: [],
@@ -243,14 +239,12 @@ export default function Step2Page() {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const isLastQuestion = currentQuestion === questions.length - 1;
   const isFirstQuestion = currentQuestion === 0;
-  
+
   // Handle different value types
   const currentValue = formData[currentQuestionData.id];
   const isCurrentAnswered = currentQuestionData.type === 'multi-select'
     ? Array.isArray(currentValue) && currentValue.length > 0
-    : currentQuestionData.type === 'dual-radio'
-      ? (currentValue as string).trim().length > 0 && formData.productType.trim().length > 0
-      : (currentValue as string).trim().length > 0;
+    : (currentValue as string).trim().length > 0;
 
   if (loading) {
     return (
@@ -274,15 +268,9 @@ export default function Step2Page() {
                 {currentQuestion + 1} of {questions.length}
               </div>
             </div>
-            <div className="relative h-2 bg-zinc-900 rounded-full overflow-hidden">
-              <div
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            
+
             {/* Question indicators */}
-            <div className="flex justify-between mt-4 gap-1">
+            <div className="flex justify-between gap-1">
               {questions.map((_, index) => (
                 <div
                   key={index}
@@ -291,8 +279,8 @@ export default function Step2Page() {
                     index < currentQuestion
                       ? "bg-blue-500"
                       : index === currentQuestion
-                      ? "bg-blue-500/50"
-                      : "bg-zinc-900"
+                        ? "bg-blue-500/50"
+                        : "bg-zinc-900"
                   )}
                 />
               ))}
@@ -311,11 +299,33 @@ export default function Step2Page() {
                   direction === 'forward' ? "slide-in-from-right-8" : "slide-in-from-left-8"
                 )}
               >
-                {/* Question Label */}
-                <div>
-                  <Label className="text-2xl md:text-3xl font-bold text-white leading-tight">
-                    {currentQuestionData.label}
-                  </Label>
+                {/* Question Label with Hover Trick */}
+                <div className="group relative">
+                  <div className="flex items-start justify-between gap-4">
+                    <Label className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                      {currentQuestionData.label}
+                    </Label>
+                    {currentQuestionData.helpText && (
+                      <div className="mt-1 flex-shrink-0">
+                        <div className="peer p-2 rounded-full bg-zinc-900 border border-zinc-800 text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/50 transition-all cursor-help">
+                          <AlertTriangleIcon className="w-5 h-5 rotate-180" />
+                        </div>
+
+                        {/* The Hover "Trick" - Tooltip */}
+                        <div className="absolute left-0 top-full mt-4 w-full z-20 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible transition-all duration-300 transform translate-y-2 peer-hover:translate-y-0">
+                          <div className="bg-blue-600 p-4 rounded-xl shadow-2xl shadow-blue-500/20 text-white text-sm leading-relaxed border border-blue-400/30">
+                            <div className="flex items-start gap-3">
+                              <div className="bg-white/20 p-1 rounded mt-0.5">
+                                <CheckIcon className="w-3 h-3 text-white" />
+                              </div>
+                              <p>{currentQuestionData.helpText}</p>
+                            </div>
+                            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-blue-600 rotate-45 border-l border-t border-blue-400/30" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <p className="text-sm text-zinc-500 mt-2">
                     Question {currentQuestion + 1} of {questions.length}
                   </p>
@@ -394,7 +404,7 @@ export default function Step2Page() {
                           ))}
                         </RadioGroup>
                       </div>
-                      
+
                       {/* Second question */}
                       {currentQuestionData.subQuestion && (
                         <div>

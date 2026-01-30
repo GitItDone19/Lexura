@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { useSignIn, useSignUp } from "@clerk/nextjs";
+import Image from "next/image";
 
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -175,8 +176,17 @@ const SignUpForm = () => {
                 initial="hidden"
             >
                 <div className="flex justify-center">
-                    <Link href="/">
-                        <Icons.icon className="w-8 h-8" />
+                    <Link href="/" className="flex items-center gap-2">
+                        <Image 
+                            src="/images/logo.png" 
+                            alt="Lexura Logo" 
+                            width={32} 
+                            height={32}
+                            quality={100}
+                            priority
+                            className="object-contain"
+                        />
+                        <span className="text-xl font-semibold">Lexura</span>
                     </Link>
                 </div>
                 <h1 className="text-2xl text-center mt-4">
@@ -187,7 +197,7 @@ const SignUpForm = () => {
                 </h1>
                 <p className="text-sm text-muted-foreground mt-2">
                     {isEmailOpen
-                        ? "Create an account to start using luro"
+                        ? "Create an account to start using Lexura"
                         : isCodeSent
                             ? "Please check your inbox for verification code"
                             : "Enter your email address to get started"}

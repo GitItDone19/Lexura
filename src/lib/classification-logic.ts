@@ -15,27 +15,43 @@ export interface ClassificationResult {
   classification: ClassificationType;
   role: RoleType;
   reasons: string[];
-  prohibitedReason?: string;
 }
 
 export function classifyAISystem(step1Data: any, step2Data: any): ClassificationResult {
-  const reasons: string[] = [];
+  const role = determineRole(step1Data);
 
-  // Check PROHIBITED first (highest priority)
+  // Check EU Scope first (now in step1Data)
+  if (step1Data.euScope === 'no') {
+    return {
+      classification: 'MINIMAL_RISK',
+      role,
+      reasons: ['AI system does not affect people in the EU - EU AI Act may not apply'],
+    };
+  }
+
+  // Check PROHIBITED first (most critical)
   const prohibitedCheck = checkProhibited(step2Data);
   if (prohibitedCheck.isProhibited) {
     return {
       classification: 'PROHIBITED',
-      role: determineRole(step1Data),
+      role,
       reasons: prohibitedCheck.reasons,
-      prohibitedReason: prohibitedCheck.specificReason,
+    };
+  }
+
+  // Check HIGH-RISK
+  const highRiskCheck = checkHighRisk(step1Data, step2Data);
+  if (highRiskCheck.isHighRisk) {
+    return {
+      classification: role === 'PROVIDER' ? 'HIGH_RISK_PROVIDER' : 'HIGH_RISK_DEPLOYER',
+      role,
+      reasons: highRiskCheck.reasons,
     };
   }
 
   // Check GPAI
   const gpaiCheck = checkGPAI(step1Data);
   if (gpaiCheck.isGPAI) {
-    const role = determineRole(step1Data);
     if (step1Data.gpaiCheck === 'develop') {
       return {
         classification: 'GPAI_PROVIDER',
@@ -43,15 +59,6 @@ export function classifyAISystem(step1Data: any, step2Data: any): Classification
         reasons: ['Develops/trains foundation model'],
       };
     } else {
-      // Continue to check if also high-risk
-      const highRiskCheck = checkHighRisk(step1Data, step2Data);
-      if (highRiskCheck.isHighRisk) {
-        return {
-          classification: role === 'PROVIDER' ? 'HIGH_RISK_PROVIDER' : 'HIGH_RISK_DEPLOYER',
-          role,
-          reasons: [...highRiskCheck.reasons, 'Also integrates GPAI model'],
-        };
-      }
       return {
         classification: 'GPAI_DEPLOYER',
         role,
@@ -60,23 +67,12 @@ export function classifyAISystem(step1Data: any, step2Data: any): Classification
     }
   }
 
-  // Check HIGH-RISK
-  const highRiskCheck = checkHighRisk(step1Data, step2Data);
-  if (highRiskCheck.isHighRisk) {
-    const role = determineRole(step1Data);
-    return {
-      classification: role === 'PROVIDER' ? 'HIGH_RISK_PROVIDER' : 'HIGH_RISK_DEPLOYER',
-      role,
-      reasons: highRiskCheck.reasons,
-    };
-  }
-
   // Check LIMITED RISK
   const limitedRiskCheck = checkLimitedRisk(step2Data);
   if (limitedRiskCheck.isLimitedRisk) {
     return {
       classification: 'LIMITED_RISK',
-      role: determineRole(step1Data),
+      role,
       reasons: limitedRiskCheck.reasons,
     };
   }
@@ -84,53 +80,9 @@ export function classifyAISystem(step1Data: any, step2Data: any): Classification
   // Default to MINIMAL RISK
   return {
     classification: 'MINIMAL_RISK',
-    role: determineRole(step1Data),
+    role,
     reasons: ['No high-risk, limited-risk, or prohibited characteristics identified'],
   };
-}
-
-function checkProhibited(step2Data: any): { isProhibited: boolean; reasons: string[]; specificReason?: string } {
-  const reasons: string[] = [];
-
-  // Social scoring by government
-  if (step2Data.sensitiveCaps?.includes('social_scoring') &&
-    step2Data.sector === 'government') {
-    return {
-      isProhibited: true,
-      reasons: ['Social scoring by government authorities'],
-      specificReason: 'Social scoring (rating citizens based on behavior) - Article 5(1)(c)',
-    };
-  }
-
-  // Biometric categorization by sensitive attributes
-  if (step2Data.sensitiveCaps?.includes('categorization')) {
-    return {
-      isProhibited: true,
-      reasons: ['Biometric categorization by race, ethnicity, or religion'],
-      specificReason: 'Biometric categorization by race, ethnicity, or religion - Article 5(1)(b)',
-    };
-  }
-
-  // Real-time biometric identification in public spaces
-  if (step2Data.biometricProcessing === 'realtime_public') {
-    return {
-      isProhibited: true,
-      reasons: ['Real-time biometric identification in publicly accessible spaces'],
-      specificReason: 'Real-time remote biometric identification in publicly accessible spaces - Article 5(1)(d)',
-    };
-  }
-
-  // Predicting criminal behavior based solely on profiling (outside law enforcement context)
-  if (step2Data.sensitiveCaps?.includes('criminal_prediction') &&
-    step2Data.sector !== 'law_enforcement') {
-    return {
-      isProhibited: true,
-      reasons: ['Predicting criminal behavior based on profiling outside law enforcement context'],
-      specificReason: 'AI systems predicting criminal behavior based solely on profiling or personality traits - Article 5(1)(d)',
-    };
-  }
-
-  return { isProhibited: false, reasons: [] };
 }
 
 function checkGPAI(step1Data: any): { isGPAI: boolean } {
@@ -139,25 +91,69 @@ function checkGPAI(step1Data: any): { isGPAI: boolean } {
   };
 }
 
+function checkProhibited(step2Data: any): { isProhibited: boolean; reasons: string[] } {
+  const reasons: string[] = [];
+
+  // 1. Social scoring by government
+  if (step2Data.sensitiveCaps?.includes('social_scoring') &&
+    step2Data.sector === 'government') {
+    reasons.push('⛔ Social scoring by government authorities (Article 5)');
+  }
+
+  // 2. Biometric categorization by sensitive attributes
+  if (step2Data.sensitiveCaps?.includes('categorization')) {
+    reasons.push('⛔ Biometric categorization by race, ethnicity, or religion (Article 5)');
+  }
+
+  // 3. Real-time biometric identification in public spaces
+  if (step2Data.biometricProcessing === 'realtime_public') {
+    reasons.push('⛔ Real-time biometric identification in publicly accessible spaces (Article 5)');
+  }
+
+  // 4. Criminal behavior prediction (ANY sector)
+  if (step2Data.sensitiveCaps?.includes('criminal_prediction')) {
+    reasons.push('⛔ Predicting criminal behavior based on profiling (Article 5)');
+  }
+
+  // 5. Emotion recognition in workplace/education
+  if (step2Data.sensitiveCaps?.includes('emotion') &&
+    (step2Data.sector === 'employment' || step2Data.sector === 'education')) {
+    reasons.push('⛔ Emotion recognition in workplace/education (Article 5)');
+  }
+
+  return {
+    isProhibited: reasons.length > 0,
+    reasons,
+  };
+}
+
 function checkHighRisk(step1Data: any, step2Data: any): { isHighRisk: boolean; reasons: string[] } {
   const reasons: string[] = [];
 
   // Employment + hiring/evaluation
   if (step2Data.sector === 'employment' &&
-    (step2Data.decisionImpact?.includes('hiring') || step2Data.decisionImpact?.includes('employee_eval'))) {
+    (step2Data.decisionImpact?.includes('hiring') ||
+      step2Data.decisionImpact?.includes('employee_eval'))) {
     reasons.push('Employment: Recruitment or worker management - Annex III(4)');
   }
 
   // Education + admissions/grading
   if (step2Data.sector === 'education' &&
-    (step2Data.decisionImpact?.includes('admissions') || step2Data.decisionImpact?.includes('grading'))) {
+    (step2Data.decisionImpact?.includes('admissions') ||
+      step2Data.decisionImpact?.includes('grading'))) {
     reasons.push('Education: Admissions or assessment - Annex III(3)');
   }
 
   // Financial + credit/insurance
   if (step2Data.sector === 'financial' &&
-    (step2Data.decisionImpact?.includes('credit') || step2Data.decisionImpact?.includes('insurance'))) {
+    (step2Data.decisionImpact?.includes('credit') ||
+      step2Data.decisionImpact?.includes('insurance'))) {
     reasons.push('Financial services: Credit or insurance decisions - Annex III(5)');
+  }
+
+  // Access to public benefits (any sector)
+  if (step2Data.decisionImpact?.includes('benefits')) {
+    reasons.push('Access to essential public services - Annex III(5)');
   }
 
   // Healthcare + medical device
@@ -165,18 +161,27 @@ function checkHighRisk(step1Data: any, step2Data: any): { isHighRisk: boolean; r
     reasons.push('Healthcare: Medical device - Annex III(1)');
   }
 
+  // Healthcare + medical diagnosis
+  if (step2Data.sector === 'healthcare' &&
+    step2Data.decisionImpact?.includes('medical')) {
+    reasons.push('Healthcare: Medical diagnosis or treatment - Annex III(1)');
+  }
+
   // Law enforcement + risk assessment
-  if (step2Data.sector === 'law_enforcement' && step2Data.decisionImpact?.includes('criminal_risk')) {
+  if (step2Data.sector === 'law_enforcement' &&
+    step2Data.decisionImpact?.includes('criminal_risk')) {
     reasons.push('Law enforcement: Risk assessment - Annex III(6)');
   }
 
   // Immigration + visa/border
-  if (step2Data.sector === 'immigration' && step2Data.decisionImpact?.includes('visa')) {
+  if (step2Data.sector === 'immigration' &&
+    step2Data.decisionImpact?.includes('visa')) {
     reasons.push('Immigration: Visa or border control - Annex III(7)');
   }
 
   // Legal + criminal proceedings
-  if (step2Data.sector === 'legal' && step2Data.decisionImpact?.includes('criminal_risk')) {
+  if (step2Data.sector === 'legal' &&
+    step2Data.decisionImpact?.includes('criminal_risk')) {
     reasons.push('Legal: Criminal proceedings - Annex III(8)');
   }
 
@@ -185,9 +190,9 @@ function checkHighRisk(step1Data: any, step2Data: any): { isHighRisk: boolean; r
     reasons.push('Critical infrastructure: Safety component - Annex III(2)');
   }
 
-  // Biometric identification (not prohibited)
-  if (step2Data.biometricProcessing === 'remote' || step2Data.biometricProcessing === 'verification') {
-    reasons.push('Biometric identification system - Annex III(1)');
+  // Remote biometric identification
+  if (step2Data.biometricProcessing === 'remote') {
+    reasons.push('Remote biometric identification - Annex III(1)');
   }
 
   // Embedded in regulated product
@@ -214,16 +219,15 @@ function checkLimitedRisk(step2Data: any): { isLimitedRisk: boolean; reasons: st
     reasons.push('Generates synthetic content - Article 50(4)');
   }
 
-  // Emotion recognition (not in high-risk context)
-  if (step2Data.sensitiveCaps?.includes('emotion')) {
+  // Emotion recognition - ONLY if NOT in workplace/education (those are prohibited)
+  if (step2Data.sensitiveCaps?.includes('emotion') &&
+    step2Data.sector !== 'employment' &&
+    step2Data.sector !== 'education') {
     reasons.push('Emotion recognition - Article 50(2)');
   }
 
-  // Biometric verification only (1:1) - only if NOT already high-risk
-  // Note: This is transparency-oriented, high-risk biometric handled separately
-  // Only add to limited risk if it's pure verification without other high-risk factors
-  if (step2Data.biometricProcessing === 'verification' &&
-    !step2Data.sensitiveCaps?.includes('categorization')) {
+  // Biometric verification (1:1)
+  if (step2Data.biometricProcessing === 'verification') {
     reasons.push('Biometric verification (1:1 matching) - Article 50(2)');
   }
 
@@ -241,5 +245,5 @@ function determineRole(step1Data: any): RoleType {
   } else if (step1Data.ownership === 'combination') {
     return 'BOTH';
   }
-  return 'DEPLOYER'; // Default
+  return 'DEPLOYER';
 }

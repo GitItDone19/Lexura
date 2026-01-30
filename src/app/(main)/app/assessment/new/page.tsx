@@ -1,13 +1,18 @@
 "use client"
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2Icon } from 'lucide-react';
 
 export default function NewAssessmentPage() {
   const router = useRouter();
+  const hasCreated = useRef(false);
 
   useEffect(() => {
+    // Prevent duplicate calls in React Strict Mode
+    if (hasCreated.current) return;
+    hasCreated.current = true;
+
     const createAssessment = async () => {
       try {
         const response = await fetch('/api/assessments', {

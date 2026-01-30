@@ -248,7 +248,10 @@ export function EnhancedSidebar() {
                     settingsExpanded ? "max-h-48 opacity-100 mt-1" : "max-h-0 opacity-0"
                   )}
                 >
-                  <div className="space-y-1 pl-4">
+                  <div className="space-y-1 pl-2 relative">
+                    {/* Continuous vertical line */}
+                    <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-zinc-800 rounded-full" />
+                    
                     {settingsSubItems.map((item) => {
                       const isActive = pathname === item.href;
                       const Icon = item.icon;
@@ -258,13 +261,17 @@ export function EnhancedSidebar() {
                           key={item.href}
                           href={item.href}
                           className={cn(
-                            "flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-200",
+                            "flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-200 relative ml-2",
                             "hover:bg-zinc-900 hover:text-white",
                             isActive
                               ? "bg-zinc-900 text-white"
                               : "text-zinc-500"
                           )}
                         >
+                          {/* Active indicator dot */}
+                          {isActive && (
+                            <div className="absolute left-[-10px] top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-blue-500 z-10" />
+                          )}
                           <Icon className={cn("h-4 w-4 flex-shrink-0", isActive && "text-blue-500")} />
                           <span className="flex-1">{item.title}</span>
                         </Link>

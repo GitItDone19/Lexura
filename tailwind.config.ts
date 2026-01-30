@@ -106,7 +106,25 @@ const config = {
           "to": {
             transform: "rotate(360deg)"
           },
-        }
+        },
+        "border-beam": {
+          "100%": {
+            "offset-distance": "100%",
+          },
+        },
+        "image-glow": {
+          "0%": {
+            "opacity": "0",
+            "animation-timing-function": "cubic-bezier(.74, .25, .76, 1)",
+          },
+          "10%": {
+            "opacity": "0.5",
+            "animation-timing-function": "cubic-bezier(.12, .01, .08, .99)",
+          },
+          "100%": {
+            "opacity": "0.7",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -117,6 +135,8 @@ const config = {
         "ripple": "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite",
         "spotlight": "spotlight 2s ease .75s 1 forwards",
         "loading": "loading 0.6s linear infinite",
+        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
+        "image-glow": "image-glow 4s ease-out 0.6s forwards",
       },
       spacing: {
         "1/8": "12.5%",

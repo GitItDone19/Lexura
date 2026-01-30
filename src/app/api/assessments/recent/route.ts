@@ -21,18 +21,29 @@ export async function GET() {
         overallScore: true,
         updatedAt: true,
         step1Data: true,
+        step2Data: true,
+        step3Data: true,
       },
     });
 
     // Format the response
     const formattedAssessments = assessments.map((assessment) => {
       const step1Data = assessment.step1Data as any;
+      
+      // Calculate progress
+      const step1Completed = assessment.step1Data !== null;
+      const step2Completed = assessment.step2Data !== null;
+      const step3Completed = assessment.step3Data !== null;
+      const completedSteps = [step1Completed, step2Completed, step3Completed].filter(Boolean).length;
+      const progress = Math.round((completedSteps / 3) * 100);
+      
       return {
         id: assessment.id,
         name: step1Data?.systemName || 'Untitled Assessment',
         status: assessment.status,
         score: assessment.overallScore,
         updatedAt: assessment.updatedAt.toISOString(),
+        progress,
       };
     });
 

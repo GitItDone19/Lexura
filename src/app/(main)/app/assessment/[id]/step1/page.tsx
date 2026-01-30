@@ -8,13 +8,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { ArrowRightIcon, ArrowLeftIcon, Loader2Icon, CheckIcon } from 'lucide-react';
+import { ArrowRightIcon, ArrowLeftIcon, Loader2Icon, CheckIcon, AlertTriangleIcon } from 'lucide-react';
 import { Container } from '@/components';
 import { cn } from '@/functions';
 
 interface Question {
   id: keyof FormData;
   label: string;
+  helpText?: string; // The "trick" explanation
   placeholder?: string;
   type: 'input' | 'textarea' | 'multi-select' | 'radio';
   rows?: number;
@@ -34,6 +35,7 @@ interface Question {
 interface FormData {
   systemName: string;
   description: string;
+  euScope: string;
   technologyType: string[];
   gpaiCheck: string;
   ownership: string;
@@ -44,6 +46,7 @@ const questions: Question[] = [
   {
     id: 'systemName',
     label: 'What is the name of your AI system?',
+    helpText: 'This is just for your internal tracking. You can use the project name or the name of the tool (e.g., "HR Screen Pro 2024").',
     placeholder: 'Enter system name (optional)',
     type: 'input',
     required: false,
@@ -51,6 +54,7 @@ const questions: Question[] = [
   {
     id: 'description',
     label: 'What does this AI system do?',
+    helpText: 'The EU AI Act classifies systems based on their "intended purpose." Describe exactly what decisions the AI makes or helps a human make.',
     placeholder: 'Describe its purpose, what decisions it makes or supports, and how it works.',
     type: 'textarea',
     rows: 5,
@@ -58,8 +62,33 @@ const questions: Question[] = [
     minLength: 20,
   },
   {
+    id: 'euScope',
+    label: 'Does this AI affect people in the EU?',
+    helpText: 'The EU AI Act applies if your AI is used in the EU or affects people in the EU, regardless of where your company is based.',
+    type: 'radio',
+    required: true,
+    options: [
+      { 
+        value: 'yes', 
+        label: 'Yes, it affects people in the EU',
+        description: 'Used in EU or impacts EU residents'
+      },
+      { 
+        value: 'no', 
+        label: 'No, it does not affect people in the EU',
+        description: 'No EU users or impact'
+      },
+      { 
+        value: 'not_sure', 
+        label: 'Not sure',
+        description: 'Need to investigate further'
+      },
+    ],
+  },
+  {
     id: 'technologyType',
-    label: 'What AI technology does it use? (Select all that apply)',
+    label: 'What AI technology does it use?',
+    helpText: 'Different technologies (like Biometrics) have extra rules under Articles 26 and 52. Select all that are core to your tool.',
     type: 'multi-select',
     required: true,
     options: [
@@ -75,21 +104,22 @@ const questions: Question[] = [
   {
     id: 'gpaiCheck',
     label: 'Is this a general-purpose AI model?',
+    helpText: 'A "General Purpose AI" (GPAI) is a model that can do many different things (like GPT-4). Purpose-built AI is designed for only one specific task.',
     type: 'radio',
     required: true,
     options: [
-      { 
-        value: 'develop', 
+      {
+        value: 'develop',
         label: 'Yes, we develop/train a foundation model',
         description: 'Like GPT, Llama, Stable Diffusion'
       },
-      { 
-        value: 'integrate', 
+      {
+        value: 'integrate',
         label: 'Yes, we integrate a foundation model into our product',
         description: 'Using existing foundation models'
       },
-      { 
-        value: 'no', 
+      {
+        value: 'no',
         label: 'No, it\'s purpose-built for specific tasks',
         description: 'Custom-built for specific use cases'
       },
@@ -98,6 +128,7 @@ const questions: Question[] = [
   {
     id: 'ownership',
     label: 'How did you obtain this AI?',
+    helpText: 'This determines if you are a "Provider" (you built it) or a "Deployer" (you use someone else\'s tool). Each has different legal responsibilities.',
     type: 'radio',
     required: true,
     options: [
@@ -129,6 +160,7 @@ export default function Step1Page() {
   const [formData, setFormData] = useState<FormData>({
     systemName: '',
     description: '',
+    euScope: '',
     technologyType: [],
     gpaiCheck: '',
     ownership: '',
@@ -180,7 +212,18 @@ export default function Step1Page() {
       });
 
       if (response.ok) {
-        router.push(`/app/assessment/${assessmentId}/step2`);
+        // If EU scope is "no", skip to report
+        if (formData.euScope === 'no') {
+          // Mark assessment as completed and generate minimal risk report
+          await fetch(`/api/assessments/${assessmentId}/step3`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ skipToMinimalRisk: true }),
+          });
+          router.push(`/app/assessment/${assessmentId}/report`);
+        } else {
+          router.push(`/app/assessment/${assessmentId}/step2`);
+        }
       } else {
         alert('Failed to save. Please try again.');
       }
@@ -196,21 +239,21 @@ export default function Step1Page() {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const isLastQuestion = currentQuestion === questions.length - 1;
   const isFirstQuestion = currentQuestion === 0;
-  
+
   // Handle different value types
   const currentValue = formData[currentQuestionData.id];
-  const isCurrentAnswered = currentQuestionData.type === 'multi-select' 
+  const isCurrentAnswered = currentQuestionData.type === 'multi-select'
     ? Array.isArray(currentValue) && currentValue.length > 0
-    : currentQuestionData.required 
+    : currentQuestionData.required
       ? (typeof currentValue === 'string' && currentValue.trim().length >= (currentQuestionData.minLength || 1))
       : true; // Optional fields are always "answered"
-  
+
   // Check if conditional field should be shown
-  const showConditionalField = currentQuestionData.conditionalField && 
+  const showConditionalField = currentQuestionData.conditionalField &&
     currentQuestionData.conditionalField.showWhen.includes(currentValue as string);
-  
+
   // Check if conditional field is filled when required
-  const isConditionalFieldAnswered = !showConditionalField || 
+  const isConditionalFieldAnswered = !showConditionalField ||
     (formData.vendorName && formData.vendorName.trim().length > 0);
 
   if (loading) {
@@ -241,7 +284,7 @@ export default function Step1Page() {
                 style={{ width: `${progress}%` }}
               />
             </div>
-            
+
             {/* Question indicators */}
             <div className="flex justify-between mt-4">
               {questions.map((_, index) => (
@@ -252,8 +295,8 @@ export default function Step1Page() {
                     index < currentQuestion
                       ? "bg-blue-500 text-white"
                       : index === currentQuestion
-                      ? "bg-blue-500/20 text-blue-400 ring-2 ring-blue-500"
-                      : "bg-zinc-900 text-zinc-600"
+                        ? "bg-blue-500/20 text-blue-400 ring-2 ring-blue-500"
+                        : "bg-zinc-900 text-zinc-600"
                   )}
                 >
                   {index < currentQuestion ? (
@@ -279,10 +322,32 @@ export default function Step1Page() {
                 )}
               >
                 {/* Question Label */}
-                <div>
-                  <Label className="text-2xl md:text-3xl font-bold text-white leading-tight">
-                    {currentQuestionData.label}
-                  </Label>
+                <div className="group relative">
+                  <div className="flex items-start justify-between gap-4">
+                    <Label className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                      {currentQuestionData.label}
+                    </Label>
+                    {currentQuestionData.helpText && (
+                      <div className="mt-1 flex-shrink-0">
+                        <div className="peer p-2 rounded-full bg-zinc-900 border border-zinc-800 text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/50 transition-all cursor-help">
+                          <AlertTriangleIcon className="w-5 h-5 rotate-180" />
+                        </div>
+
+                        {/* The Hover "Trick" - Tooltip */}
+                        <div className="absolute left-0 top-full mt-4 w-full z-20 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible transition-all duration-300 transform translate-y-2 peer-hover:translate-y-0">
+                          <div className="bg-blue-600 p-4 rounded-xl shadow-2xl shadow-blue-500/20 text-white text-sm leading-relaxed border border-blue-400/30">
+                            <div className="flex items-start gap-3">
+                              <div className="bg-white/20 p-1 rounded mt-0.5">
+                                <CheckIcon className="w-3 h-3 text-white" />
+                              </div>
+                              <p>{currentQuestionData.helpText}</p>
+                            </div>
+                            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-blue-600 rotate-45 border-l border-t border-blue-400/30" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <p className="text-sm text-zinc-500 mt-2">
                     Question {currentQuestion + 1} of {questions.length}
                   </p>
@@ -384,7 +449,7 @@ export default function Step1Page() {
                       autoFocus
                     />
                   )}
-                  
+
                   {/* Conditional Field */}
                   {showConditionalField && currentQuestionData.conditionalField && (
                     <div className="pt-4 animate-in fade-in slide-in-from-top-4 duration-300">
@@ -401,7 +466,7 @@ export default function Step1Page() {
                       />
                     </div>
                   )}
-                  
+
                   {/* Validation hint */}
                   {currentQuestionData.minLength && currentQuestionData.type === 'textarea' && (
                     <p className="text-xs text-zinc-500 mt-2">

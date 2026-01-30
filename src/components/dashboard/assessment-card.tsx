@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from 'react';
-import { FileTextIcon, CalendarIcon, TrendingUpIcon, GlobeIcon } from 'lucide-react';
+import { CalendarIcon, TrendingUpIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 
@@ -12,18 +12,17 @@ interface AssessmentCardProps {
   score: number | null;
   updatedAt: string;
   systemDescription?: string;
+  progress: number;
 }
 
-export function AssessmentCard({ id, name, status, score, updatedAt, systemDescription }: AssessmentCardProps) {
+export function AssessmentCard({ id, name, status, score, updatedAt, systemDescription, progress }: AssessmentCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const splashRef = useRef<HTMLDivElement>(null);
-  const watermarkRef = useRef<HTMLDivElement>(null);
   const iconRefs = useRef<(SVGSVGElement | null)[]>([]);
 
   useEffect(() => {
     const card = cardRef.current;
     const splash = splashRef.current;
-    const watermark = watermarkRef.current;
     if (!card) return;
 
     // Entry animation
@@ -53,20 +52,6 @@ export function AssessmentCard({ id, name, status, score, updatedAt, systemDescr
       }
     });
 
-    // Watermark drift animation
-    let watermarkAnim: number;
-    let watermarkTime = 0;
-    const animateWatermark = () => {
-      if (watermark) {
-        watermarkTime += 0.01;
-        const y = Math.sin(watermarkTime) * 20;
-        const x = Math.cos(watermarkTime * 0.5) * 10;
-        watermark.style.transform = `rotate(-8deg) translate(${x}px, ${y}px)`;
-      }
-      watermarkAnim = requestAnimationFrame(animateWatermark);
-    };
-    animateWatermark();
-
     // Color splash float animation
     let splashAnim: number;
     let splashTime = 0;
@@ -91,10 +76,10 @@ export function AssessmentCard({ id, name, status, score, updatedAt, systemDescr
       card.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
       card.style.transform = `
         perspective(1000px)
-        translateX(${x * 0.08}px)
-        translateY(${y * 0.08}px)
-        rotateX(${-y * 0.03}deg)
-        rotateY(${x * 0.03}deg)
+        translateX(${x * 0.03}px)
+        translateY(${y * 0.03}px)
+        rotateX(${-y * 0.01}deg)
+        rotateY(${x * 0.01}deg)
       `;
     };
 
@@ -109,7 +94,6 @@ export function AssessmentCard({ id, name, status, score, updatedAt, systemDescr
     return () => {
       card.removeEventListener('mousemove', handleMouseMove);
       card.removeEventListener('mouseleave', handleMouseLeave);
-      cancelAnimationFrame(watermarkAnim);
       cancelAnimationFrame(splashAnim);
     };
   }, []);
@@ -118,7 +102,7 @@ export function AssessmentCard({ id, name, status, score, updatedAt, systemDescr
     <Link href={`/app/assessment/${id}`}>
       <div
         ref={cardRef}
-        className="relative w-full p-6 bg-white/[0.04] rounded-[16px] backdrop-blur-md overflow-hidden cursor-pointer transition-all duration-500 group"
+        className="relative w-full p-8 bg-white/[0.04] rounded-[16px] backdrop-blur-md overflow-hidden cursor-pointer transition-all duration-500 group"
         style={{ transformStyle: 'preserve-3d' }}
       >
         {/* Animated Border */}
@@ -152,35 +136,22 @@ export function AssessmentCard({ id, name, status, score, updatedAt, systemDescr
           }}
         />
 
-        {/* Assessment Name */}
-        <div className="relative z-10 mb-2">
-          <div className="text-2xl font-black leading-[0.95] tracking-tight">
-            <span className="block text-white">
-              {name.split(' ')[0]}
-            </span>
-            <span className="block text-white">
-              {name.split(' ').slice(1).join(' ') || 'Assessment'}
-            </span>
+        {/* Name */}
+        <div className="relative z-10 mb-4">
+          <div className="text-2xl font-black leading-[0.95] tracking-tight text-white">
+            {name}
           </div>
         </div>
 
         {/* Status Badge */}
-        <div className="relative z-10 mt-2 mb-4">
+        <div className="relative z-10 mt-3 mb-6">
           <Badge className="text-[10px] tracking-[3px] uppercase bg-blue-500/10 text-blue-400/70 border-blue-500/20 hover:bg-blue-500/20 font-normal">
             {status === 'COMPLETED' ? 'Completed' : 'In Progress'}
           </Badge>
         </div>
 
-        {/* Divider */}
-        <div className="relative h-px bg-gradient-to-r from-transparent via-white to-transparent opacity-20 mb-3" />
-
-        {/* Accent Dot */}
-        <div className="flex justify-center mb-3">
-          <div className="w-[4px] h-[4px] rounded-full bg-gradient-to-r from-blue-400 to-blue-500 opacity-70" />
-        </div>
-
         {/* Info Items */}
-        <div className="relative z-10 space-y-2.5">
+        <div className="relative z-10 space-y-3.5 mb-6">
           <div className="flex items-center gap-2.5 text-xs text-white/80 group/item cursor-default">
             <CalendarIcon 
               ref={(el) => { iconRefs.current[0] = el; }}
@@ -196,21 +167,10 @@ export function AssessmentCard({ id, name, status, score, updatedAt, systemDescr
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5 text-xs text-white/80 group/item cursor-default">
-            <FileTextIcon 
-              ref={(el) => { iconRefs.current[1] = el; }}
-              className="w-3 h-3 stroke-blue-400 opacity-65 flex-shrink-0" 
-              strokeWidth={1.4}
-            />
-            <span className="relative transition-colors duration-300 group-hover/item:text-white truncate">
-              {systemDescription || 'EU AI Act Assessment'}
-            </span>
-          </div>
-
-          {score !== null ? (
+          {score !== null && (
             <div className="flex items-center gap-2.5 text-xs text-white/80 group/item cursor-default">
               <TrendingUpIcon 
-                ref={(el) => { iconRefs.current[2] = el; }}
+                ref={(el) => { iconRefs.current[1] = el; }}
                 className="w-3 h-3 stroke-blue-400 opacity-65 flex-shrink-0" 
                 strokeWidth={1.4}
               />
@@ -218,27 +178,28 @@ export function AssessmentCard({ id, name, status, score, updatedAt, systemDescr
                 Compliance Score: {score}%
               </span>
             </div>
-          ) : (
-            <div className="flex items-center gap-2.5 text-xs text-white/80 group/item cursor-default">
-              <GlobeIcon 
-                ref={(el) => { iconRefs.current[2] = el; }}
-                className="w-3 h-3 stroke-blue-400 opacity-65 flex-shrink-0" 
-                strokeWidth={1.4}
-              />
-              <span className="relative transition-colors duration-300 group-hover/item:text-white">
-                EU AI Act Compliance
-              </span>
-            </div>
           )}
         </div>
 
-        {/* Watermark */}
-        <div 
-          ref={watermarkRef}
-          className="absolute -bottom-4 -right-3 text-[60px] font-black text-white/[0.035] pointer-events-none mix-blend-overlay select-none"
-          style={{ letterSpacing: '-4px' }}
-        >
-          {name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2)}
+        {/* Progress Bar */}
+        <div className="relative z-10 mt-auto">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Progress</span>
+            <span className="text-xs text-white/70 font-semibold">{progress}%</span>
+          </div>
+          <div className="relative h-2 bg-white/[0.06] rounded-full overflow-hidden">
+            <div
+              className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-700 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+            <div 
+              className="absolute top-0 left-0 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"
+              style={{ 
+                width: `${progress}%`,
+                backgroundSize: '200% 100%'
+              }}
+            />
+          </div>
         </div>
       </div>
     </Link>
