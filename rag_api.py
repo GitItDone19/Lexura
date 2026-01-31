@@ -12,11 +12,11 @@ from dotenv import load_dotenv
 
 # --- SETUP & CONFIG ---
 load_dotenv()
-DB_PATH = r"C:\Users\ASUS\Desktop\legal EU\eu_ai_act_index"
+DB_PATH = "./eu_ai_act_index"  # Updated to use relative path in your workspace
 COLLECTION_NAME = "eu_ai_act"
 EMBED_MODEL = "all-MiniLM-L6-v2"
 RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
-GEMINI_MODEL = "gemini-2.0-flash" # Note: Ensure this matches your available model version
+GEMINI_MODEL = "gemini-2.5-flash"
 
 # Key Rotation Setup
 keys_str = os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEYS")
@@ -33,11 +33,18 @@ models = {}
 async def lifespan(app: FastAPI):
     """Handles startup and shutdown of heavy models."""
     print("🚀 Loading ChromaDB and Local Models...")
-    chroma_client = chromadb.PersistentClient(path=DB_PATH)
-    models["collection"] = chroma_client.get_collection(name=COLLECTION_NAME)
-    models["embedder"] = SentenceTransformer(EMBED_MODEL)
-    models["reranker"] = CrossEncoder(RERANK_MODEL)
-    print("✅ Models loaded and ready.")
+    try:
+        chroma_client = chromadb.PersistentClient(path=DB_PATH)
+        models["collection"] = chroma_client.get_collection(name=COLLECTION_NAME)
+        models["embedder"] = SentenceTransformer(EMBED_MODEL)
+        models["reranker"] = CrossEncoder(RERANK_MODEL)
+        print("✅ Models loaded and ready.")
+    except Exception as e:
+        print(f"⚠️ Warning: Could not load ChromaDB collection: {e}")
+        print("   RAG will use fallback mode (Gemini only)")
+        models["collection"] = None
+        models["embedder"] = None
+        models["reranker"] = None
     yield
     models.clear()
 
@@ -69,7 +76,29 @@ async def ask_legal_rag(request: QueryRequest):
         api_key = next(key_cycle)
         client = genai.Client(api_key=api_key)
         
-        # 2. Vector Retrieval
+        # Check if ChromaDB is available
+        if not models["collection"]:
+            # Fallback to direct Gemini query
+            print("⚠️ ChromaDB not available, using Gemini fallback")
+            prompt = f"""You are a strict legal assistant for the EU AI Act.
+            
+            Please provide a comprehensive answer about the EU AI Act for the following question:
+            {user_question}
+            
+            Include relevant article references where possible and provide practical guidance."""
+            
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt,
+                config=types.GenerateContentConfig(temperature=0.0, max_output_tokens=1024)
+            )
+            
+            return QueryResponse(
+                answer=f"[FALLBACK MODE] {response.text}",
+                citation="EU AI Act (General Knowledge)"
+            )
+        
+        # 2. Vector Retrieval (original code)
         q_emb = models["embedder"].encode([user_question]).tolist()
         results = models["collection"].query(query_embeddings=q_emb, n_results=20)
 
