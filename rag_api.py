@@ -53,7 +53,12 @@ app = FastAPI(lifespan=lifespan)
 # --- CORS FOR NEXT.JS ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], # Your Next.js URL
+    allow_origins=[
+        "http://localhost:3000",
+        "https://*.vercel.app",
+        "https://lexura.com",
+        "https://www.lexura.com"
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
