@@ -57,7 +57,7 @@ const SignInForm = () => {
 
         try {
             await signIn?.authenticateWithRedirect({
-                strategy,
+                strategy: strategy as any,
                 redirectUrl: "/auth/signup/sso-callback",
                 redirectUrlComplete: "/auth/callback",
             });
