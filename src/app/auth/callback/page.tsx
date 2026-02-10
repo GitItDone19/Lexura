@@ -1,4 +1,4 @@
-import { db } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -10,14 +10,14 @@ const AuthCallbackPage = async () => {
         return redirect("/auth/signin");
     }
 
-    const existingUser = await db.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
         where: {
             clerkId: user.id,
         },
     });
 
     if (!existingUser) {
-        await db.user.create({
+        await prisma.user.create({
             data: {
                 id: user.id,
                 clerkId: user.id,
