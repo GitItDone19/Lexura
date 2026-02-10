@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       async () => {
         // Fallback to Gemini if RAG fails
         const model = genAI.getGenerativeModel({ 
-          model: 'gemini-1.5-pro',
+          model: 'gemini-2.5-flash',
           generationConfig: {
             temperature: 0.3,
             topP: 0.9,
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
         const systemPrompt = 'You are an expert EU AI Act compliance consultant. Provide detailed, accurate, and actionable compliance reports based on the EU AI Act regulations. Always reference specific articles and provide practical guidance.';
         
         const result = await model.generateContent(`${systemPrompt}\n\n${briefSummary}`);
-        const response = await result.response;
+        const response = result.response;
         return response.text();
       }
     );

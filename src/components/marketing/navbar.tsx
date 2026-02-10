@@ -46,7 +46,7 @@ const Navbar = () => {
                         <div className="flex items-center flex-1 lg:flex-none pl-1">
                             <Link href="/" className="flex items-center gap-2 group">
                                 <Image 
-                                    src="/images/logo.png" 
+                                    src="/images/favicon.png" 
                                     alt="Lexura Logo" 
                                     width={24} 
                                     height={24}

@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 # --- SETUP & CONFIG ---
 load_dotenv()
-DB_PATH = "./eu_ai_act_index"  # Updated to use relative path in your workspace
+DB_PATH = "eu_ai_act_index"  # Updated to look for db subfolder
 COLLECTION_NAME = "eu_ai_act"
 EMBED_MODEL = "all-MiniLM-L6-v2"
 RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
@@ -160,7 +160,7 @@ async def ask_legal_rag(request: QueryRequest):
         response = client.models.generate_content(
             model=GEMINI_MODEL,
             contents=prompt,
-            config=types.GenerateContentConfig(temperature=0.0, max_output_tokens=1024)
+            config=types.GenerateContentConfig(temperature=0.0, max_output_tokens=8000)
         )
 
         return QueryResponse(

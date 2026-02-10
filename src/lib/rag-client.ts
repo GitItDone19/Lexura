@@ -11,7 +11,10 @@ export class RAGClient {
   }
 
   async query(question: string): Promise<RAGQueryResponse> {
-    const response = await fetch(this.baseUrl, {
+    // Use environment variable for production, fallback to localhost for dev
+    const url = process.env.NEXT_PUBLIC_RAG_API_URL || 'http://localhost:8000/query';
+    
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

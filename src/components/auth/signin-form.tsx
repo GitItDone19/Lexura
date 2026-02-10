@@ -194,7 +194,7 @@ const SignInForm = () => {
                 <div className="flex justify-center">
                     <Link href="/" className="flex items-center gap-2">
                         <Image 
-                            src="/images/logo.png" 
+                            src="/images/favicon.png" 
                             alt="Lexura Logo" 
                             width={32} 
                             height={32}

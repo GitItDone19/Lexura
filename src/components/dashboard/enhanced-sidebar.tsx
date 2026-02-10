@@ -131,7 +131,7 @@ export function EnhancedSidebar() {
           {!collapsed && (
             <Link href="/app" className="flex items-center gap-3 group">
               <Image 
-                src="/images/logo.png" 
+                src="/images/favicon.png" 
                 alt="Lexura Logo" 
                 width={28} 
                 height={28}
@@ -147,7 +147,7 @@ export function EnhancedSidebar() {
           {collapsed && (
             <Link href="/app" className="flex items-center justify-center w-full">
               <Image 
-                src="/images/logo.png" 
+                src="/images/favicon.png" 
                 alt="Lexura Logo" 
                 width={28} 
                 height={28}
