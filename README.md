@@ -1,5 +1,10 @@
 # ⚖️ Lexura
 
+<<<<<<< HEAD
+=======
+# ⚖️ Lexura
+
+>>>>>>> 16ddf318efc2b9f91fea9ec4bcfb994429fb4788
 Lexura is a comprehensive platform designed to help organizations assess and ensure their AI systems comply with the **EU AI Act**. It features an interactive assessment flow, compliance report generation, and an automated legal assistant powered by Retrieval-Augmented Generation (RAG) using the official EU AI Act texts.
 
 ## 🚀 Features
