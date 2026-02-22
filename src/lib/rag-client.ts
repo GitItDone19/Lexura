@@ -13,7 +13,7 @@ export class RAGClient {
   async query(question: string): Promise<RAGQueryResponse> {
     // Use environment variable for production, fallback to localhost for dev
     const url = process.env.NEXT_PUBLIC_RAG_API_URL || 'http://localhost:8000/query';
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -42,7 +42,7 @@ export class RAGClient {
       };
     } catch (error) {
       console.warn('RAG query failed, using fallback:', error);
-      
+
       if (fallbackFn) {
         const fallbackAnswer = await fallbackFn();
         return {
@@ -51,7 +51,7 @@ export class RAGClient {
           source: 'fallback'
         };
       }
-      
+
       throw error;
     }
   }
