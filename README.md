@@ -1,341 +1,191 @@
-# Lexura - EU AI Act Compliance Platform
+# Lexura
 
-A comprehensive web application designed to help organizations assess and achieve compliance with the European Union's AI Act. Lexura provides an intelligent, step-by-step assessment process that evaluates AI systems, classifies their risk levels, and generates detailed compliance reports.
+**An EU AI Act assessment and reporting workspace.** Lexura collects information about an AI system, applies a transparent set of classification rules, asks role and risk specific compliance questions, and generates a report from the assessment.
 
-## Overview
+> Lexura is an educational decision-support tool. Its rule-based classification and generated report are not legal advice or a determination of compliance. Verify results with qualified counsel and the current EU AI Act.
 
-Lexura streamlines EU AI Act compliance by combining a structured assessment framework with AI-powered analysis. The platform guides organizations through risk classification, identifies compliance gaps, and delivers actionable recommendations tailored to their specific AI systems.
+![Lexura assessment flow: describe a system, examine its use, answer relevant safeguards, and review the result](public/images/readme/assessment-flow.svg)
 
-## Key Features
+## What it does
 
-- **Multi-Step Assessment Workflow**: Structured three-step process to evaluate AI systems comprehensively
-- **Intelligent Risk Classification**: Automated classification into Unacceptable, High-Risk, Limited Risk, or Minimal Risk categories
-- **AI-Powered Report Generation**: Uses Google Gemini and RAG technology to generate detailed compliance reports
-- **Real-Time Compliance Analysis**: Instant gap analysis against EU AI Act requirements
-- **User Authentication**: Secure authentication powered by Clerk with support for email, Google, and Apple sign-in
-- **Role-Based Access**: Support for both client and admin user roles
-- **Dashboard Analytics**: Visual overview of assessments and compliance status
-- **PDF Export**: Download compliance reports for documentation and stakeholder review
+- Creates private, signed-in workspaces for assessments.
+- Guides a user through system details, use-case risk signals, and a classification-specific questionnaire.
+- Classifies the system with rule-based checks for prohibited, high-risk, GPAI, limited-risk, or minimal-risk categories.
+- Requests an AI-generated compliance report using an optional RAG service, with Google Gemini as a fallback when the RAG request fails.
+- Saves assessment answers and reports in PostgreSQL and provides a dashboard to revisit assessments.
+- Renders reports as Markdown and uses the browser print dialog for saving or printing to PDF.
 
-## Technology Stack
+## How it works
 
-### Frontend
-- **Next.js 14**: React framework with App Router
-- **TypeScript**: Type-safe development
-- **Tailwind CSS**: Utility-first styling
-- **Radix UI**: Accessible component primitives
-- **Framer Motion**: Animation library
-- **React Hook Form**: Form state management
-- **Zod**: Schema validation
+![Lexura architecture: browser, Next.js application, PostgreSQL, Clerk, optional RAG API, and Gemini fallback](public/images/readme/architecture.svg)
 
-### Backend
-- **Next.js API Routes**: Serverless API endpoints
-- **Prisma**: Type-safe database ORM
-- **PostgreSQL**: Primary database (Neon)
-- **Clerk**: Authentication and user management
+1. **Sign in.** Clerk provides authentication. The server resolves the signed-in Clerk identity to a Lexura user record.
+2. **Describe the AI system.** Step 1 collects system purpose, EU scope, technology, general-purpose model involvement, and provider/deployer role.
+3. **Describe its use.** Step 2 collects sector, decisions influenced, affected people, product type, biometric processing, and sensitive capabilities.
+4. **Classify and assess safeguards.** `src/lib/classification-logic.ts` checks EU scope, prohibited practices, high-risk use cases, GPAI involvement, and transparency-related limited-risk signals in that order. Step 3 presents questions based on the resulting class and role.
+5. **Generate and save a report.** The report route builds a summary from the answers and requests the configured RAG endpoint. If that request fails, the route uses Gemini. The report is stored on the assessment and shown in the report page.
 
-### AI & Machine Learning
-- **Google Gemini API**: AI report generation
-- **Python RAG System**: Retrieval-augmented generation for EU AI Act knowledge
-- **ChromaDB**: Vector database for document embeddings
-- **Sentence Transformers**: Text embeddings
-- **FastAPI**: Python API server for RAG queries
+Assessment answers are stored as JSON fields (`step1Data`, `step2Data`, and `step3Data`) on the `Assessment` model. The model also has fields for classification, score, requirements, action plan, and report; not all of these fields are currently populated by the workflow.
 
-## Getting Started
+## Current implementation
 
-### Prerequisites
+| Area | Implemented here |
+| --- | --- |
+| Web app | Next.js 14 App Router, React 18, TypeScript, Tailwind CSS |
+| Authentication | Clerk middleware and server-side identity lookup |
+| Data | Prisma ORM with PostgreSQL; schema includes `User` and `Assessment` |
+| Classification | Local TypeScript decision rules in `src/lib/classification-logic.ts` |
+| Report generation | Google Generative AI SDK (`gemini-2.5-flash`) with an optional RAG HTTP request first |
+| RAG service | Not included in this checkout. The app expects a compatible service at `/query` (default `http://localhost:8000/query`). |
+| PDF | Browser print dialog; there is no dedicated PDF generation service |
 
-- Node.js 18 or higher
-- Python 3.9 or higher
-- PostgreSQL database (or Neon account)
-- Clerk account for authentication
-- Google Gemini API key
+The Python dependencies, `dev:rag` script, and `Procfile` refer to `rag_api.py`, but that file is not present in the repository. The RAG service must therefore be supplied separately, or report generation will use Gemini as the fallback. The committed `eu_ai_act_index/` is a ChromaDB data directory; it does not provide the missing API implementation by itself.
 
-### Installation
+## Run locally
 
-1. Clone the repository:
+### Requirements
+
+- Node.js 18 or newer and npm
+- A PostgreSQL database
+- Clerk application keys
+- A Google Gemini API key for report fallback
+- Optional: a separately deployed RAG API compatible with `POST /query`
+
+### Install
+
 ```bash
-git clone https://github.com/yourusername/lexura.git
-cd lexura
-```
-
-2. Install Node.js dependencies:
-```bash
+git clone <repository-url>
+cd Lexura
 npm install
 ```
 
-3. Install Python dependencies:
-```bash
-pip install -r requirements.txt
-```
+Create `.env` in the repository root. `DIRECT_URL` is used by Prisma for direct database access. For a local PostgreSQL database, both database variables can use the same connection string; with Neon, use the provider's pooled and direct URLs as appropriate.
 
-4. Set up environment variables:
-
-Create a `.env` file based on `.env.example`:
-
-```env
-# Application
+```dotenv
 NEXT_PUBLIC_APP_NAME=Lexura
-NEXT_PUBLIC_APP_DOMAIN=http://localhost:3000
+NEXT_PUBLIC_APP_DOMAIN=localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-# Database (Neon)
-DATABASE_URL=your_postgresql_connection_string
-DIRECT_URL=your_postgresql_direct_connection_string
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?sslmode=require"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?sslmode=require"
 
-# Authentication (Clerk)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-CLERK_SECRET_KEY=your_clerk_secret_key
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/signin
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/signup
 NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_URL=/app
 NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_URL=/app
 
-# AI Report Generation
-GEMINI_API_KEY=your_gemini_api_key
+# Optional, if you configure Clerk user webhooks.
+CLERK_WEBHOOK_SECRET=whsec_...
 
-# RAG API (optional)
-NEXT_PUBLIC_RAG_API_URL=http://localhost:8000
+GEMINI_API_KEY=...
+
+# Optional. This must be the full POST endpoint, including /query.
+NEXT_PUBLIC_RAG_API_URL=http://localhost:8000/query
 ```
 
-5. Set up the database:
+The sign-in and sign-up paths above match the pages in `src/app/auth/`. The example file `.env.example` lists only a subset of runtime settings; in particular, Prisma also needs `DIRECT_URL`.
 
-Follow the instructions in `NEON_SETUP.md` to configure your Neon PostgreSQL database.
+Generate the Prisma client and apply the schema to your database:
 
 ```bash
 npx prisma generate
 npx prisma db push
 ```
 
-6. Start the development servers:
+Start the web app:
 
-For the full application with RAG support:
 ```bash
-npm run dev:full
-```
-
-Or start services individually:
-```bash
-# Terminal 1: Next.js app
 npm run dev
-
-# Terminal 2: Python RAG API
-npm run dev:rag
 ```
 
-The application will be available at `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000). To use RAG-backed reports, start or deploy the separate RAG service and point `NEXT_PUBLIC_RAG_API_URL` at its `/query` endpoint. Without a reachable RAG service, the report route attempts Gemini fallback; set a valid `GEMINI_API_KEY` for that path.
 
-## Project Structure
+`npm run dev:rag` and `npm run dev:full` currently reference the missing `rag_api.py`; they will not start the RAG service from this checkout.
 
+## Assessment and classification
+
+The assessment flow gathers the following information:
+
+| Step | Information collected |
+| --- | --- |
+| 1 · System | Intended purpose, EU impact, technology types, GPAI development or integration, and whether the user is provider, deployer, or both |
+| 2 · Use case | Sector, decision impact, affected people, product type, biometric processing, and sensitive capabilities |
+| 3 · Safeguards | Questions selected for the computed risk category and role, covering areas such as risk management, documentation, human oversight, transparency, or GPAI provider duties |
+
+The classifier applies checks in this precedence: EU scope, prohibited practices, high-risk indicators, GPAI role, limited-risk transparency signals, then minimal risk. It uses the selected form values and hard-coded rules; it is not a complete or authoritative implementation of the EU AI Act. A user who indicates no EU impact can take a shortcut to a minimal-risk result.
+
+Possible outputs include `PROHIBITED`, `HIGH_RISK_PROVIDER`, `HIGH_RISK_DEPLOYER`, `GPAI_PROVIDER`, `GPAI_DEPLOYER`, `LIMITED_RISK`, and `MINIMAL_RISK`. The role and category names reflect the application's current rules and do not substitute for legal analysis.
+
+The report page can regenerate the report and uses the browser's print dialog (`window.print()`) for a PDF workflow. Report text is generated from submitted answers and external model/service responses; review it before relying on it.
+
+## Repository map
+
+```text
+src/
+  app/
+    (marketing)/       Public landing page
+    (main)/app/        Signed-in dashboard and assessment pages
+    api/               Assessment, dashboard, report, RAG, and webhook routes
+    auth/              Sign-in and sign-up pages
+  lib/
+    classification-logic.ts   Rule-based risk classification
+    generate-brief-summary.ts Assessment-to-report prompt construction
+    get-or-create-user.ts     Clerk identity to Prisma user lookup
+    rag-client.ts             RAG request and Gemini fallback orchestration
+  middleware.ts        Clerk route protection
+prisma/
+  schema.prisma        PostgreSQL data model
+public/
+  images/readme/       README diagrams
+eu_ai_act_index/       ChromaDB data files (not the RAG API)
 ```
-lexura/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── (main)/            # Main application layout
-│   │   │   └── app/           # Protected app routes
-│   │   ├── (marketing)/       # Public marketing pages
-│   │   ├── api/               # API routes
-│   │   │   ├── assessments/   # Assessment CRUD operations
-│   │   │   ├── generate-report/ # AI report generation
-│   │   │   ├── rag-query/     # RAG system queries
-│   │   │   └── webhooks/      # Clerk webhooks
-│   │   └── auth/              # Authentication pages
-│   ├── components/            # React components
-│   │   ├── auth/             # Authentication components
-│   │   ├── global/           # Shared components
-│   │   └── ui/               # UI primitives
-│   ├── constants/            # Application constants
-│   ├── functions/            # Utility functions
-│   ├── hooks/               # Custom React hooks
-│   ├── lib/                 # Core logic and clients
-│   │   ├── rag-client.ts    # RAG API client
-│   │   └── generate-brief-summary.ts # Summary generation
-│   ├── schema/              # Zod validation schemas
-│   └── styles/              # Global styles
-├── prisma/
-│   ├── schema.prisma        # Database schema
-│   └── migrations/          # Database migrations
-├── public/                  # Static assets
-├── eu_ai_act_index/         # ChromaDB vector store
-├── scripts/                 # Build and deployment scripts
-└── requirements.txt         # Python dependencies
-```
 
-## Database Schema
+## API routes
 
-The application uses PostgreSQL with the following main models:
+Routes that read or change user assessments resolve the current user through Clerk and scope database queries to that user.
 
-- **User**: User accounts with Clerk integration
-- **Assessment**: AI system assessments with multi-step data
-  - Step 1: System information
-  - Step 2: Use case details
-  - Step 3: Compliance status
-  - Generated reports and classifications
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `GET`, `POST` | `/api/assessments` | List the current user's assessments or create one |
+| `GET`, `PATCH`, `DELETE` | `/api/assessments/:id` | Read, update, or delete an owned assessment |
+| `POST` | `/api/assessments/:id/step1` | Save system information |
+| `POST` | `/api/assessments/:id/step2` | Save use-case information |
+| `POST` | `/api/assessments/:id/step3` | Save safeguards or apply the EU-scope shortcut |
+| `GET` | `/api/assessments/recent` | List recent assessments |
+| `GET` | `/api/dashboard/stats` | Return dashboard counts and average saved score |
+| `POST` | `/api/generate-report` | Generate report text from assessment data |
+| `POST` | `/api/rag-query` | Proxy a question to `http://localhost:8000/query` |
+| `POST` | `/api/webhooks/clerk` | Clerk webhook handler |
 
-## API Endpoints
-
-### Assessments
-- `POST /api/assessments` - Create new assessment
-- `GET /api/assessments/:id` - Get assessment details
-- `PATCH /api/assessments/:id` - Update assessment
-- `DELETE /api/assessments/:id` - Delete assessment
-- `GET /api/assessments/recent` - Get recent assessments
-
-### Reports
-- `POST /api/generate-report` - Generate AI compliance report
-- `POST /api/rag-query` - Query RAG system for EU AI Act information
-
-### User
-- `GET /api/user` - Get current user data
-- `POST /api/webhooks/clerk` - Clerk user sync webhook
-
-## Assessment Process
-
-### Step 1: System Information
-- System name and description
-- Technology type classification
-- Ownership and organizational role
-- EU market scope
-- General purpose AI identification
-
-### Step 2: Use Case Analysis
-- Sector and industry context
-- Decision impact level
-- Affected persons and stakeholders
-- Product type categorization
-- Biometric processing detection
-- Sensitive capabilities assessment
-
-### Step 3: Compliance Status
-- Risk management system evaluation
-- Data governance and documentation
-- Bias testing and fairness measures
-- Technical documentation completeness
-- Logging and traceability
-- User instructions and transparency
-- Human oversight mechanisms
-- Override capabilities
-- Accuracy and security measures
-
-## Risk Classification Levels
-
-1. **Unacceptable Risk**: Prohibited AI systems under EU AI Act
-2. **High Risk**: Requires strict compliance measures and documentation
-3. **Limited Risk**: Transparency obligations apply
-4. **Minimal Risk**: Minimal or no regulatory requirements
-
-## RAG System
-
-The platform includes a Python-based RAG system that provides enhanced compliance guidance by retrieving relevant sections from the EU AI Act documentation:
-
-- **Vector Database**: ChromaDB for efficient similarity search
-- **Embeddings**: Sentence Transformers for semantic understanding
-- **FastAPI Server**: RESTful API for RAG queries
-- **Fallback**: Google Gemini for cases where RAG is unavailable
-
-## Authentication
-
-User authentication is handled by Clerk with support for:
-- Email verification (magic link)
-- Google OAuth
-- Apple OAuth
-- Role-based access control (Client, Admin)
-
-## Development Commands
+## Useful commands
 
 ```bash
-# Development
-npm run dev              # Start Next.js dev server
-npm run dev:rag          # Start Python RAG API
-npm run dev:full         # Start both servers concurrently
-
-# Database
+npm run dev              # Next.js development server
+npm run build            # Production build
+npm run start            # Serve the production build
+npm run lint             # Next.js ESLint command
 npx prisma generate      # Generate Prisma client
-npx prisma db push       # Push schema changes
-npx prisma studio        # Open database GUI
-npx prisma migrate dev   # Create and apply migrations
-
-# Build
-npm run build            # Build for production
-npm run start            # Start production server
-
-# Code Quality
-npm run lint             # Run ESLint
+npx prisma db push       # Apply schema to the configured database
+npx prisma studio        # Open Prisma Studio
 ```
 
-## Deployment
+## Deployment notes
 
-### Vercel (Recommended for Next.js)
-1. Connect your GitHub repository to Vercel
-2. Configure environment variables
-3. Deploy automatically on push to main branch
+- Deploy the Next.js application to a Node-compatible host and configure all environment variables there.
+- Provision PostgreSQL and set both `DATABASE_URL` and `DIRECT_URL` for the target provider.
+- Configure Clerk's allowed redirect URLs to match the deployed `/auth/signin` and `/auth/signup` pages.
+- Set `GEMINI_API_KEY` if the report route should use Gemini when RAG is unavailable.
+- If using RAG, deploy its API separately and set `NEXT_PUBLIC_RAG_API_URL` to the complete `/query` endpoint. The API implementation is not included in this repository.
+- The repository's `Procfile` starts `uvicorn rag_api:app`; that command requires the missing `rag_api.py` module and is not a complete deployment setup for this checkout.
 
-### Database
-Use Neon for serverless PostgreSQL with automatic scaling and connection pooling.
-
-### Python RAG API
-Deploy the RAG API separately:
-- Railway
-- Render
-- AWS Lambda with Docker
-- Google Cloud Run
-
-Update `NEXT_PUBLIC_RAG_API_URL` to point to your deployed RAG service.
-
-## Environment Variables
-
-See `.env.example` for all required environment variables. Key configurations:
-
-- Database connection strings (Neon)
-- Clerk authentication keys
-- Google Gemini API key
-- RAG API URL (for production)
+See [NEON_SETUP.md](NEON_SETUP.md) for the existing Neon notes. The Prisma schema requires `DIRECT_URL`, so configure it even though that guide only shows `DATABASE_URL` in its first connection-string example.
 
 ## Contributing
 
-We welcome contributions to improve Lexura. Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes with clear commit messages
-4. Write or update tests as needed
-5. Submit a pull request
-
-## Security
-
-- All user data is encrypted at rest
-- Authentication tokens are securely managed by Clerk
-- API keys are stored as environment variables
-- Database connections use SSL
-- Input validation with Zod schemas
-- CORS policies enforced on API routes
+Open an issue to discuss a change, then submit a pull request with a focused description. Keep documentation aligned with the behavior in the repository and avoid presenting generated results as legal determinations.
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
-## Acknowledgments
-
-- EU AI Act official documentation
-- Google Gemini for AI capabilities
-- Clerk for authentication infrastructure
-- Neon for serverless PostgreSQL
-- The open-source community for excellent tools and libraries
-
-## Support
-
-For questions, issues, or feature requests, please open an issue on GitHub or contact our team.
-
-## Roadmap
-
-- Multi-language support for international compliance
-- Enhanced analytics dashboard
-- Automated compliance monitoring
-- Integration with document management systems
-- API access for enterprise customers
-- Mobile application
-- Compliance template library
-- Team collaboration features
-
----
-
-Built with care to help organizations navigate EU AI Act compliance confidently.
+Lexura is licensed under the MIT License. See [LICENSE](LICENSE).

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Lexura application architecture</title>
+  <desc id="desc">The browser uses the Next.js app. Clerk handles sign-in, Prisma stores user and assessment records in PostgreSQL, and report generation calls an optional external RAG API before falling back to Gemini.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#222"/></marker>
+    <marker id="arrow-gray" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#777"/></marker>
+    <style>
+      text{font-family:Arial,Helvetica,sans-serif;fill:#171717}.muted{fill:#626262}.line{stroke:#222;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}.dashed{stroke:#777;stroke-width:2;stroke-dasharray:7 7;fill:none;stroke-linecap:round;stroke-linejoin:round}.card{fill:#fafafa;stroke:#aaa;stroke-width:1.5}.tag{fill:#eee;stroke:#bbb;stroke-width:1}.small{font-size:16px}.body{font-size:19px}.label{font-size:14px;letter-spacing:1px;font-weight:700}.heading{font-size:24px;font-weight:700}
+    </style>
+  </defs>
+  <rect width="1600" height="760" fill="#fff"/>
+  <text x="52" y="66" font-size="38" font-weight="700">How the application is connected</text>
+  <text x="54" y="102" font-size="21" class="muted">Requests move through the web app; assessment data stays in the user's PostgreSQL records</text>
+
+  <!-- Browser -->
+  <rect class="card" x="52" y="250" width="255" height="245" rx="9"/>
+  <path class="line" d="M78 281h203v129H78zM78 305h203M92 293h3m15 0h3m15 0h3"/>
+  <text x="80" y="445" class="heading">Browser</text>
+  <text x="80" y="475" class="small muted">Dashboard · forms · report</text>
+
+  <!-- Next app boundary -->
+  <rect x="385" y="160" width="510" height="445" rx="12" fill="#fff" stroke="#555" stroke-width="2"/>
+  <text x="410" y="199" class="label">LEXURA APPLICATION</text>
+  <rect class="card" x="410" y="222" width="460" height="128" rx="7"/>
+  <text x="433" y="260" class="heading">Next.js 14 · App Router</text>
+  <text x="433" y="292" class="small">React UI · route handlers · Clerk middleware</text>
+  <text x="433" y="322" class="small muted">Assessment workflow · classification rules</text>
+  <rect class="card" x="410" y="375" width="460" height="190" rx="7"/>
+  <text x="433" y="414" class="heading">Report generation route</text>
+  <text x="433" y="448" class="small">Builds a prompt from submitted assessment answers</text>
+  <text x="433" y="478" class="small">Requests RAG guidance; falls back to Gemini</text>
+  <path class="line" d="M433 503h414"/>
+  <text x="433" y="536" class="small muted">Report is returned to the UI and saved on the assessment</text>
+
+  <!-- Browser arrows -->
+  <path d="M310 335h66" class="line" marker-end="url(#arrow)"/>
+  <text x="311" y="319" font-size="14" class="muted">HTTPS</text>
+  <path d="M376 417h-60" class="dashed" marker-end="url(#arrow-gray)"/>
+  <text x="310" y="446" font-size="14" class="muted">UI response</text>
+
+  <!-- Clerk -->
+  <rect class="card" x="1035" y="145" width="235" height="145" rx="8"/>
+  <circle cx="1072" cy="188" r="19" class="line"/><path class="line" d="M1043 245c2-28 56-28 58 0M1062 188h20m-10-10v20"/>
+  <text x="1110" y="183" class="heading">Clerk</text>
+  <text x="1110" y="213" class="small">Sign-in and identity</text>
+  <text x="1110" y="242" font-size="14" class="muted">Server resolves user record</text>
+  <path d="M895 254h125" class="line" marker-end="url(#arrow)"/>
+  <text x="914" y="238" font-size="14" class="muted">Auth</text>
+
+  <!-- PostgreSQL -->
+  <rect class="card" x="1035" y="360" width="235" height="170" rx="8"/>
+  <ellipse cx="1080" cy="405" rx="28" ry="11" class="line"/><path class="line" d="M1052 405v58c0 15 56 15 56 0v-58M1052 434c0 15 56 15 56 0"/>
+  <text x="1120" y="402" class="heading">PostgreSQL</text>
+  <text x="1120" y="433" class="small">via Prisma</text>
+  <text x="1055" y="492" class="small muted">Users · answers · reports</text>
+  <path d="M895 438h125" class="line" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="915" y="422" font-size="14" class="muted">Read / write</text>
+
+  <!-- AI external services -->
+  <rect x="1320" y="145" width="235" height="206" rx="8" fill="#fff" stroke="#777" stroke-width="1.5" stroke-dasharray="7 6"/>
+  <rect class="tag" x="1337" y="162" width="197" height="27" rx="13"/>
+  <text x="1350" y="181" font-size="12" font-weight="700" letter-spacing=".7">OPTIONAL · EXTERNAL</text>
+  <text x="1340" y="226" class="heading">RAG API</text>
+  <text x="1340" y="256" class="small">POST /query</text>
+  <text x="1340" y="285" font-size="14" class="muted">Expected endpoint; service code</text>
+  <text x="1340" y="307" font-size="14" class="muted">is not in this repository.</text>
+  <path d="M895 470h115v-140h290v-84h15" class="line" marker-end="url(#arrow)"/>
+  <text x="1110" y="229" font-size="14" class="muted">Question from assessment</text>
+  <path d="M1320 325h-12v255H895" class="dashed" marker-end="url(#arrow-gray)"/>
+  <text x="1110" y="574" font-size="14" class="muted">Answer · citation (if available)</text>
+
+  <rect class="card" x="1320" y="430" width="235" height="125" rx="8"/>
+  <text x="1340" y="472" class="heading">Google Gemini</text>
+  <text x="1340" y="503" class="small">Fallback report generation</text>
+  <text x="1340" y="530" font-size="14" class="muted">Requires GEMINI_API_KEY</text>
+  <path d="M895 525h105v78h305v-110h15" class="dashed" marker-end="url(#arrow)"/>
+  <text x="1110" y="514" font-size="14" class="muted">When RAG request fails</text>
+
+  <!-- Legend/footer -->
+  <path class="line" d="M60 662h72" marker-end="url(#arrow)"/>
+  <text x="145" y="668" class="small muted">In-repository request or data flow</text>
+  <path class="dashed" d="M450 662h72" marker-end="url(#arrow-gray)"/>
+  <text x="535" y="668" class="small muted">Optional service or fallback path</text>
+  <rect x="960" y="628" width="595" height="70" rx="7" fill="#f4f4f4" stroke="#bbb"/>
+  <text x="984" y="656" font-size="15" font-weight="700">RAG implementation note</text>
+  <text x="984" y="680" font-size="14" class="muted">Python packages and launch config exist; rag_api.py is absent from this checkout.</text>
+</svg>

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">How a Lexura assessment works</title>
+  <desc id="desc">Four stages: describe the AI system, map its use and risk signals, answer relevant safeguards, then review the classification and generated report.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#222"/></marker>
+    <style>
+      text{font-family:Arial,Helvetica,sans-serif;fill:#171717}.muted{fill:#626262}.line{stroke:#222;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}.soft{stroke:#aaa;stroke-width:1.5}.card{fill:#fafafa;stroke:#b9b9b9;stroke-width:1.5}.small{font-size:17px}.body{font-size:20px}.label{font-size:15px;letter-spacing:1px;font-weight:700}.heading{font-size:25px;font-weight:700}
+    </style>
+  </defs>
+  <rect width="1600" height="760" fill="#fff"/>
+  <text x="52" y="66" font-size="38" font-weight="700">From AI system to compliance report</text>
+  <text x="54" y="102" font-size="21" class="muted">A guided assessment, with classification rules applied to the information you provide</text>
+  <g transform="translate(1260 52)"><circle cx="0" cy="0" r="8" fill="#222"/><text x="18" y="6" font-size="16" class="muted">Implemented flow</text></g>
+
+  <!-- Stage 1 -->
+  <rect class="card" x="40" y="145" width="350" height="500" rx="9"/>
+  <text x="64" y="185" class="label">01 / SYSTEM</text>
+  <text x="64" y="222" class="heading">Describe the AI</text>
+  <text x="64" y="258" class="body">Set its purpose and context.</text>
+  <rect x="64" y="290" width="302" height="54" rx="5" fill="#fff" stroke="#aaa"/>
+  <text x="82" y="323" class="small">Intended purpose</text>
+  <rect x="64" y="356" width="302" height="54" rx="5" fill="#fff" stroke="#aaa"/>
+  <text x="82" y="389" class="small">EU impact · technology</text>
+  <rect x="64" y="422" width="302" height="54" rx="5" fill="#fff" stroke="#aaa"/>
+  <text x="82" y="455" class="small">Provider · deployer · GPAI</text>
+  <path class="line" d="M215 500v39m0 0h-78v28m78-28h78v28"/>
+  <path class="line" d="M115 567h42v36h-42zM257 567h42v36h-42z"/>
+  <path class="line" d="M122 567v-8h28v8m114 0v-8h28v8"/>
+  <text x="64" y="630" class="small muted">Answers are saved to the assessment.</text>
+
+  <path d="M395 395h33" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Stage 2 -->
+  <rect class="card" x="435" y="145" width="350" height="500" rx="9"/>
+  <text x="459" y="185" class="label">02 / USE CASE</text>
+  <text x="459" y="222" class="heading">Map its impact</text>
+  <text x="459" y="258" class="body">Describe where it is used.</text>
+  <g transform="translate(470 294)">
+    <circle cx="35" cy="35" r="26" class="line"/><path class="line" d="M9 35h52M35 9c15 14 15 38 0 52M35 9c-15 14-15 38 0 52"/>
+    <text x="80" y="31" class="small">Sector and decisions</text><text x="80" y="54" class="small muted">Who is affected?</text>
+  </g>
+  <path class="soft" d="M460 370h300"/>
+  <g transform="translate(470 390)">
+    <path class="line" d="M8 6h50v55H8zM20 20h26M20 31h26M20 42h16"/>
+    <text x="80" y="28" class="small">Biometrics and</text><text x="80" y="51" class="small">sensitive capabilities</text>
+  </g>
+  <path class="soft" d="M460 470h300"/>
+  <text x="470" y="509" class="small muted">Rule checks run in this order:</text>
+  <text x="470" y="541" class="small">EU scope  →  prohibited  →  high risk</text>
+  <text x="470" y="570" class="small">GPAI  →  limited  →  minimal</text>
+  <rect x="470" y="593" width="280" height="30" rx="15" fill="#eee"/>
+  <text x="487" y="614" font-size="14" font-weight="700">Local TypeScript rules</text>
+
+  <path d="M790 395h33" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Stage 3 -->
+  <rect class="card" x="830" y="145" width="350" height="500" rx="9"/>
+  <text x="854" y="185" class="label">03 / SAFEGUARDS</text>
+  <text x="854" y="222" class="heading">Answer relevant checks</text>
+  <text x="854" y="258" class="body">Questions depend on class and role.</text>
+  <g transform="translate(858 298)">
+    <rect x="0" y="0" width="294" height="55" rx="5" fill="#fff" stroke="#aaa"/>
+    <circle cx="23" cy="27" r="9" class="line"/><path class="line" d="m19 27 3 3 6-7"/>
+    <text x="46" y="24" class="small">Risk management</text><text x="46" y="44" font-size="14" class="muted">Provider and deployer duties</text>
+    <rect x="0" y="66" width="294" height="55" rx="5" fill="#fff" stroke="#aaa"/>
+    <circle cx="23" cy="93" r="9" class="line"/><path class="line" d="m19 93 3 3 6-7"/>
+    <text x="46" y="90" class="small">Data and documentation</text><text x="46" y="110" font-size="14" class="muted">Evidence and traceability</text>
+    <rect x="0" y="132" width="294" height="55" rx="5" fill="#fff" stroke="#aaa"/>
+    <circle cx="23" cy="159" r="9" class="line"/><path class="line" d="m19 159 3 3 6-7"/>
+    <text x="46" y="156" class="small">Human oversight</text><text x="46" y="176" font-size="14" class="muted">Monitoring and intervention</text>
+    <rect x="0" y="198" width="294" height="55" rx="5" fill="#fff" stroke="#aaa"/>
+    <circle cx="23" cy="225" r="9" class="line"/><path class="line" d="m19 225 3 3 6-7"/>
+    <text x="46" y="222" class="small">Transparency · GPAI duties</text><text x="46" y="242" font-size="14" class="muted">When relevant to the classification</text>
+  </g>
+  <text x="854" y="600" class="small muted">Responses are stored with the assessment.</text>
+
+  <path d="M1185 395h33" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Stage 4 -->
+  <rect class="card" x="1225" y="145" width="335" height="500" rx="9"/>
+  <text x="1249" y="185" class="label">04 / RESULT</text>
+  <text x="1249" y="222" class="heading">Review the report</text>
+  <text x="1249" y="258" class="body">Classification and AI guidance.</text>
+  <rect x="1249" y="294" width="287" height="106" rx="6" fill="#fff" stroke="#888" stroke-width="1.5"/>
+  <text x="1268" y="323" class="label">ASSESSMENT RESULT</text>
+  <path class="line" d="M1268 343h246"/>
+  <text x="1268" y="374" font-size="22" font-weight="700">Risk class + reasons</text>
+  <rect x="1249" y="418" width="287" height="96" rx="6" fill="#fff" stroke="#888" stroke-width="1.5"/>
+  <path class="line" d="M1271 445h33v42h-33zM1280 456h15m-15 9h15m-15 9h11"/>
+  <text x="1320" y="455" class="small" font-weight="700">Generated report</text>
+  <text x="1320" y="480" font-size="14" class="muted">RAG request, Gemini fallback</text>
+  <text x="1249" y="557" class="small">Read, regenerate, or print to PDF.</text>
+  <text x="1249" y="588" class="small muted">Review guidance before relying on it.</text>
+
+  <rect x="40" y="675" width="1520" height="48" rx="6" fill="#f4f4f4" stroke="#bbb"/>
+  <circle cx="67" cy="699" r="7" fill="#222"/>
+  <text x="85" y="705" font-size="16" font-weight="700">Important</text>
+  <text x="184" y="705" font-size="16" class="muted">Lexura's rule checks and generated reports support review; they are not legal advice or an official compliance decision.</text>
+</svg>
