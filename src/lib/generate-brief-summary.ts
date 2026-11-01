@@ -123,20 +123,20 @@ Generate a concise and highly consistent EU AI Act compliance report. The report
 
 ## Required Sections:
 
-### 1. 📋 Executive Summary
+### 1.  Executive Summary
 - Provide a brief 1-2 paragraph overview.
 - State the classification result and key implications.
 - Give a quick readiness assessment.
 
-### 2. ⚖️ Classification & Risk Analysis
+### 2.  Classification & Risk Analysis
 - Briefly explain the reasoning for the classification.
 - Note the primary risk factors (bullet points).
 
-### 3. � Compliance Gap Analysis
+### 3.  Compliance Gap Analysis
 - Use a markdown table to summarize critical gaps.
 - Columns: Requirement area, Current State, Missing Action, Impact.
 
-### 4. 🚨 Action Plan
+### 4.  Action Plan
 - List 3-5 prioritized, specific next steps.
 - Keep recommendations brief and actionable.
 </REPORT_REQUIREMENTS>
