@@ -38,3 +38,16 @@ next-env.d.ts
 
 # other
 index.txt
+
+# secrets
+.env.*
+!.env.example
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+service-account*.json
+
+# local video project
+/videos/lexura-promo/
